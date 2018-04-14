@@ -6,12 +6,13 @@ sudo apt-get autoremove -y
 
 echo "### Installing dependencies for automatic USB management"
 sudo apt-get install python3-pip -y
+sudo apt-get install libevent-dev
 sudo pip3 install watchdog
 sudo pip3 install datetime
 sudo pip3 install obd
 
 echo "### Creating folder for logs (available only for pi user)"
-sudo mkdir /home/chip/Documents/
+#sudo mkdir /home/chip/Documents/
 sudo mkdir /home/chip/Documents/logs
 sudo mkdir /home/chip/Documents/logs/usb_share
 sudo mkdir /home/chip/Documents/logs/obd_logs
