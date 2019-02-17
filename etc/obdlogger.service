@@ -1,9 +1,9 @@
 [Unit]
-Description=BT_autopair
+Description=OBD logger service
 
 [Service]
 Type=simple
-ExecStart=/usr/local/share/bt_autopair.py
+ExecStart=/usr/local/share/obd_logger.py
 Restart=always
 
 [Install]

@@ -1,0 +1,10 @@
+[Unit]
+Description=Automate bluetooth connection
+
+[Service]
+Type=simple
+ExecStart=/usr/local/share/obd_connect.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

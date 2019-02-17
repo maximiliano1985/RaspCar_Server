@@ -2,6 +2,7 @@
 import time
 import datetime
 import os
+import getpass
 from watchdog.observers import Observer
 from watchdog.events import *
 
@@ -14,9 +15,9 @@ ACT_EVENTS = [DirDeletedEvent, DirMovedEvent, FileDeletedEvent, FileModifiedEven
 ACT_TIME_OUT = 30 # s
 
 ## Logger management
-HOME_FOLDER     = "/home/pi/"
+HOME_FOLDER     = '/home/'+getpass.getuser()
 LOG_FOLDER      = HOME_FOLDER+"Documents/logs/usb_share/"
-LOG_TOKEN       = "[USB_SHARE]"
+LOG_TOKEN       = "[U]"#"[USB_SHARE]"
 LOG_SEP         = " "
 LOG_FILENAME    = None
 
@@ -31,8 +32,9 @@ def init_log_file():
     
 def write_to_log(msg):
     now = datetime.datetime.now()
+    hms = str(now.hour)+':'+str(now.minute)+':'+str(now.second)
     log_file = open(LOG_FOLDER+LOG_FILENAME, 'a')
-    log_file.write(str(now) + LOG_SEP + LOG_TOKEN + LOG_SEP + msg + '\n')
+    log_file.write(hms + LOG_SEP + LOG_TOKEN + LOG_SEP + msg + '\n')
     log_file.close()
     
 ##
