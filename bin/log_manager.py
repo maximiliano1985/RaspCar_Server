@@ -14,7 +14,7 @@ import select
 import getpass
 
 ## Logger management
-HOME_FOLDER     = '/home/'+getpass.getuser()
+HOME_FOLDER     = '/home/pi'#+getpass.getuser()
 LOG_FOLDER      = HOME_FOLDER+"/Documents/logs/"
 LOG_TOKEN       = "[L]"
 LOG_SEP         = " "
@@ -66,7 +66,9 @@ init_log_file()
 
 
 try:
-    #while True:
+    
+    time.sleep(10)
+    
     # get the newest file
     print(LOG_FOLDER_USBSHARE+'.2*.log')
     newestfile_usb = max(glob.iglob(LOG_FOLDER_USBSHARE+'.2*.log'), key=os.path.getctime)

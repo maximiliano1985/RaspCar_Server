@@ -6,7 +6,7 @@ import subprocess
 import datetime
 
 # ELM327 v1.5
-#subprocess.call("sudo rfcomm connect 0 00:0D:18:3A:67:89 1", shell=True)
+#subprocess.Popen("sudo rfcomm connect 0 00:0D:18:3A:67:89 1", shell=True)
 
 
 ## Logger management
@@ -105,7 +105,7 @@ nDatalines = 0
 
 n_reconnection_trials = 0
 while not OBDconnection.is_connected():
-    write_to_log("Not connected, reconnecting in ", RECONNECTION_DELAY_SEC, " seconds")
+    write_to_log("Not connected, reconnecting in "+str(RECONNECTION_DELAY_SEC)+" seconds")
     time.sleep(RECONNECTION_DELAY_SEC)
     
     OBDconnection = obd.OBD(port) 
@@ -118,7 +118,7 @@ while not OBDconnection.is_connected():
 
 if OBDconnection.is_connected():
     while True:
-        write_to_log("Connected to ", port)
+        write_to_log("Connected to "+port)
         logged_values = ""
         for cmd in cmds:
             response = OBDconnection.query(cmd)
@@ -131,7 +131,7 @@ if OBDconnection.is_connected():
         
         nDatalines += 1
         if (nDatalines % 1000) == 0:
-            write_to_log("Logged ", nDatalines, " lines")
+            write_to_log("Logged "+str(nDatalines)+" lines")
     
     OBDconnection.close()
    

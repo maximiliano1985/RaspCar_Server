@@ -43,7 +43,7 @@ echo "### Installation of service for automatic OBD management"
 sudo cp obd_logger.py /usr/local/share
 sudo cp obd_connect.py /usr/local/share
 sudo cp ../etc/obdlogger.service /etc/systemd/system
-sudo cp ../etc/obdconnect.service /etc/systemd/system
+#sudo cp ../etc/obdconnect.service /etc/systemd/system
 
 
 echo "### Installation of service for log files management"
@@ -54,13 +54,13 @@ echo "### Enabling of installed services"
 cd /usr/local/share/
 sudo chmod +x usb_share.py
 sudo chmod +x log_manager.py
-sudo chmod +x obd_connect.py
+#sudo chmod +x obd_connect.py
 sudo chmod +x obd_logger.py
 
 cd /etc/systemd/system
 sudo systemctl daemon-reload
-sudo systemctl enable obdconnect.service
-sudo systemctl start obdconnect.service
+#sudo systemctl enable obdconnect.service
+#sudo systemctl start obdconnect.service
 
 sudo systemctl enable usbshare.service
 sudo systemctl start usbshare.service
@@ -76,16 +76,27 @@ sudo apt-get install samba samba-common-bin
 sudo chmod -R 777 /etc/samba/smb.conf
 
 echo "### Configuring SAMBA"
-echo "[share]" >> /etc/samba/smb.conf
-echo "Comment = Shared Folder" >> /etc/samba/smb.conf
-echo "Path = /mnt/usb_share" >> /etc/samba/smb.conf
-echo "Browseable = yes" >> /etc/samba/smb.conf
-echo "Writeable = Yes" >> /etc/samba/smb.conf
-echo "only guest = no" >> /etc/samba/smb.conf
-echo "create mask = 0777" >> /etc/samba/smb.conf
-echo "directory mask = 0777" >> /etc/samba/smb.conf
-echo "Public = yes" >> /etc/samba/smb.conf
-echo "Guest ok = yes" >> /etc/samba/smb.conf
+echo "[music]" >> /etc/samba/smb.conf
+echo "  Comment = Music Folder" >> /etc/samba/smb.conf
+echo "  Path = /mnt/usb_share" >> /etc/samba/smb.conf
+echo "  Browseable = yes" >> /etc/samba/smb.conf
+echo "  Writeable = Yes" >> /etc/samba/smb.conf
+echo "  only guest = no" >> /etc/samba/smb.conf
+echo "  create mask = 0777" >> /etc/samba/smb.conf
+echo "  directory mask = 0777" >> /etc/samba/smb.conf
+echo "  Public = yes" >> /etc/samba/smb.conf
+echo "  Guest ok = yes" >> /etc/samba/smb.conf
+echo "" >> /etc/samba/smb.conf
+echo "[logs]" >> /etc/samba/smb.conf
+echo "  Comment = Logs Folder" >> /etc/samba/smb.conf
+echo "  Path = /home/pi/Documents/logs" >> /etc/samba/smb.conf
+echo "  Browseable = yes" >> /etc/samba/smb.conf
+echo "  Writeable = Yes" >> /etc/samba/smb.conf
+echo "  only guest = no" >> /etc/samba/smb.conf
+echo "  create mask = 0777" >> /etc/samba/smb.conf
+echo "  directory mask = 0777" >> /etc/samba/smb.conf
+echo "  Public = yes" >> /etc/samba/smb.conf
+echo "  Guest ok = yes" >> /etc/samba/smb.conf
 
 echo "### Restarting SAMBA"
 sudo /etc/init.d/samba restart
