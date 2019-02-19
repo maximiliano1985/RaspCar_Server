@@ -2,15 +2,16 @@
 import obd
 import time
 import getpass
-import subprocess
+#import subprocess
 import datetime
+import sys
 
 # ELM327 v1.5
 #subprocess.Popen("sudo rfcomm connect 0 00:0D:18:3A:67:89 1", shell=True)
 
 
 ## Logger management
-HOME_FOLDER     = '/home/'+getpass.getuser()
+HOME_FOLDER     = '/home/pi'#+getpass.getuser()
 LOG_FOLDER      = HOME_FOLDER+"/Documents/logs/obd_logs/"
 LOGDATA_FOLDER  = HOME_FOLDER+"/Documents/logs/obddata_logs/"
 LOG_FILENAME    = "_obd.log"
@@ -40,7 +41,7 @@ def write_to_logData(msg, printTime = True):
     hms = str(now.hour)+':'+str(now.minute)+':'+str(now.second)
     LOGDATA_FILE.write(hms + msg + '\n')
    
-def init_LOG_FILEs(header):
+def init_LOG_FILEs():
     global LOG_FILENAME
     global LOGDATA_FILE
     now = datetime.datetime.now()
@@ -51,13 +52,8 @@ def init_LOG_FILEs(header):
     LOGDATA_FILE = open(LOGDATA_FOLDER+timenow+LOGDATA_FILENAME, 'a')
     LOG_FILENAME = timenow+LOG_FILENAME
     
-    write_to_logData(header, False)
     
     
-    
-port = '/dev/rfcomm0'
-OBDconnection = obd.OBD(port) 
-
 cmds = [
     obd.commands.THROTTLE_POS,#
     obd.commands.RELATIVE_THROTTLE_POS,#
@@ -89,26 +85,25 @@ cmds = [
     #obd.commands.FUEL_RATE
 ]
 
+#time.sleep(1)
 
+init_LOG_FILEs()
+    
+n_reconnection_trials = 0
+
+port = '/dev/rfcomm0'
+OBDconnection = obd.OBD(port) 
 #response = OBDconnection.query(obd.commands.ELM_VERSION); print(response)
 
 
-header = "Time"
-for cmd in cmds:
-    header += LOG_SEP + cmd.name
-
-init_LOG_FILEs(header)
-
-nDatalines = 0
-
-
-
-n_reconnection_trials = 0
 while not OBDconnection.is_connected():
     write_to_log("Not connected, reconnecting in "+str(RECONNECTION_DELAY_SEC)+" seconds")
     time.sleep(RECONNECTION_DELAY_SEC)
     
-    OBDconnection = obd.OBD(port) 
+    try:
+        OBDconnection = obd.OBD(port) 
+    except:
+        write_to_log("Unexpected error: "+str(sys.exc_info()[0]) )
     
     n_reconnection_trials += 1
     if n_reconnection_trials > RECONNECTION_MAX_TRIALS:
@@ -117,6 +112,13 @@ while not OBDconnection.is_connected():
     
 
 if OBDconnection.is_connected():
+    nDatalines = 0
+    
+    header = "Time"
+    for cmd in cmds:
+        header += LOG_SEP + cmd.name
+    write_to_logData(header, printTime = False)
+    
     while True:
         write_to_log("Connected to "+port)
         logged_values = ""
@@ -132,7 +134,9 @@ if OBDconnection.is_connected():
         nDatalines += 1
         if (nDatalines % 1000) == 0:
             write_to_log("Logged "+str(nDatalines)+" lines")
-    
+        
+        time.sleep(0.001)
+        
     OBDconnection.close()
    
     LOGDATA_FILE.close()    

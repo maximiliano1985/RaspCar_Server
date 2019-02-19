@@ -15,8 +15,8 @@ ACT_EVENTS = [DirDeletedEvent, DirMovedEvent, FileDeletedEvent, FileModifiedEven
 ACT_TIME_OUT = 30 # s
 
 ## Logger management
-HOME_FOLDER     = '/home/'+getpass.getuser()
-LOG_FOLDER      = HOME_FOLDER+"Documents/logs/usb_share/"
+HOME_FOLDER     = '/home/pi'#+getpass.getuser()
+LOG_FOLDER      = HOME_FOLDER+"/Documents/logs/usb_share/"
 LOG_TOKEN       = "[U]"#"[USB_SHARE]"
 LOG_SEP         = " "
 LOG_FILENAME    = None
@@ -28,7 +28,7 @@ def init_log_file():
     timenow = timenow.replace(' ', 'h')
     timenow = timenow.replace(':', '_')
     #print(timenow)
-    LOG_FILENAME = "."+timenow+"_usb_share.log"
+    LOG_FILENAME = timenow+"_usb_share.log"
     
 def write_to_log(msg):
     now = datetime.datetime.now()

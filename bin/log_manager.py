@@ -4,7 +4,7 @@
 # - obd_log.py (TBD)
 
 
-
+import obd # not used but placed here to have the log_manager loaded after the obd_logger
 import glob
 import time
 import datetime
@@ -66,23 +66,22 @@ init_log_file()
 
 
 try:
-    
+    print("##### LOG MANAGER #####")
     time.sleep(10)
     
     # get the newest file
-    print(LOG_FOLDER_USBSHARE+'.2*.log')
-    newestfile_usb = max(glob.iglob(LOG_FOLDER_USBSHARE+'.2*.log'), key=os.path.getctime)
+    newestfile_usb = max(glob.iglob(LOG_FOLDER_USBSHARE+'2*.log'), key=os.path.getctime)
     newestfile_obd = max(glob.iglob(LOG_FOLDER_OBDLOG+'2*.log'), key=os.path.getctime)
     
     write_to_log(LOG_TOKEN+" Logs manager monitoring file "+newestfile_usb)
     write_to_log(LOG_TOKEN+" Logs manager monitoring file "+newestfile_obd)
     
-    f_usb = subprocess.Popen(['tail','-F',newestfile_usb],\
+    f_usb = subprocess.Popen(['tail','-F', newestfile_usb],\
             stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     p_usb = select.poll()
     p_usb.register(f_usb.stdout)
     
-    f_obd = subprocess.Popen(['tail','-F',newestfile_obd],\
+    f_obd = subprocess.Popen(['tail','-F', newestfile_obd],\
             stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     p_obd = select.poll()
     p_obd.register(f_obd.stdout)
@@ -90,8 +89,9 @@ try:
     while True:
         if p_usb.poll(1):
             process_log_file(f_usb)
+        if p_obd.poll(1):
             process_log_file(f_obd) 
              
-        #time.sleep(1)
+        time.sleep(0.001)
 except KeyboardInterrupt:
     write_to_log(LOG_TOKEN+" KeyboardInterrupt logs manager")
