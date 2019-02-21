@@ -19,13 +19,13 @@ LOGDATA_FILENAME= "_obdData.log"
 LOG_TOKEN       = "[O]"#"[USB_SHARE]"
 LOG_SEP         = ";"
 
-RECONNECTION_DELAY_SEC  = 20
+RECONNECTION_DELAY_SEC  = 10
 RECONNECTION_MAX_TRIALS = 20
 
 LOGDATA_FILE    = None
 LOG_FILE        = None
 
-VEROBSE = False
+VERBOSE = True
 
 def write_to_log(msg, printTime = True):
     global LOG_FILENAME
@@ -35,11 +35,10 @@ def write_to_log(msg, printTime = True):
     log_file.write(hms + " " + LOG_TOKEN + " " + msg + '\n')
     log_file.close() 
 
-def write_to_logData(msg, printTime = True):
-    global LOGDATA_FILE
+def write_to_logData(msg, logdata_file, printTime = True):
     now = datetime.datetime.now()
     hms = str(now.hour)+':'+str(now.minute)+':'+str(now.second)
-    LOGDATA_FILE.write(hms + msg + '\n')
+    logdata_file.write(hms + msg + '\n')
    
 def init_LOG_FILEs():
     global LOG_FILENAME
@@ -51,6 +50,28 @@ def init_LOG_FILEs():
     #print(timenow)
     LOGDATA_FILE = open(LOGDATA_FOLDER+timenow+LOGDATA_FILENAME, 'a')
     LOG_FILENAME = timenow+LOG_FILENAME
+    
+
+def reconnect():
+    OBDconnection = obd.OBD(port) 
+    
+    n_reconnection_trials = 0
+
+    
+    while not OBDconnection.is_connected():
+        n_reconnection_trials += 1
+        write_to_log(str(n_reconnection_trials)+" Not connected, reconnecting in "+str(RECONNECTION_DELAY_SEC)+" seconds")
+        time.sleep(RECONNECTION_DELAY_SEC)
+    
+        try:
+            OBDconnection = obd.OBD(port) 
+        except:
+            write_to_log("Unexpected error: "+str(sys.exc_info()[0]) )
+    
+        if n_reconnection_trials > RECONNECTION_MAX_TRIALS:
+            write_to_log("Impossible to connect, quit application")
+            quit()
+    return OBDconnection
     
     
     
@@ -89,26 +110,11 @@ cmds = [
 
 init_LOG_FILEs()
     
-n_reconnection_trials = 0
-
 port = '/dev/rfcomm0'
-OBDconnection = obd.OBD(port) 
 #response = OBDconnection.query(obd.commands.ELM_VERSION); print(response)
 
 
-while not OBDconnection.is_connected():
-    write_to_log("Not connected, reconnecting in "+str(RECONNECTION_DELAY_SEC)+" seconds")
-    time.sleep(RECONNECTION_DELAY_SEC)
-    
-    try:
-        OBDconnection = obd.OBD(port) 
-    except:
-        write_to_log("Unexpected error: "+str(sys.exc_info()[0]) )
-    
-    n_reconnection_trials += 1
-    if n_reconnection_trials > RECONNECTION_MAX_TRIALS:
-        write_to_log("Impossible to connect, quit application")
-        quit()
+OBDconnection = reconnect()
     
 
 if OBDconnection.is_connected():
@@ -117,25 +123,39 @@ if OBDconnection.is_connected():
     header = "Time"
     for cmd in cmds:
         header += LOG_SEP + cmd.name
-    write_to_logData(header, printTime = False)
+    write_to_logData(header, LOGDATA_FILE, printTime = False)
+    
+    write_to_log("Connected to "+port)
     
     while True:
-        write_to_log("Connected to "+port)
         logged_values = ""
+        error_while_logging = False
+        
         for cmd in cmds:
             response = OBDconnection.query(cmd)
-            logged_values += LOG_SEP + str(response.value.magnitude)
             
-        if VEROBSE:
+            #logged_values += LOG_SEP + str(response.value.magnitude)
+            try:
+                logged_values += LOG_SEP + str(response.value.magnitude)
+            except:
+                error_while_logging = True
+                write_to_log("Error in connection, reconnecting")
+                OBDconnection = reconnect()
+                
+        if VERBOSE:
             print(logged_values)    
-    
-        write_to_logData(logged_values)
         
-        nDatalines += 1
-        if (nDatalines % 1000) == 0:
-            write_to_log("Logged "+str(nDatalines)+" lines")
+        #print(logged_values)
         
-        time.sleep(0.001)
+        if not error_while_logging:
+            write_to_logData(logged_values, LOGDATA_FILE)
+
+            nDatalines += 1
+            if (nDatalines % 1000) == 0:
+                write_to_log("Logged "+str(nDatalines)+" lines")
+
+            #time.sleep(0.01)
+        
         
     OBDconnection.close()
    

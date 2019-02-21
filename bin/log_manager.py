@@ -92,6 +92,6 @@ try:
         if p_obd.poll(1):
             process_log_file(f_obd) 
              
-        time.sleep(0.001)
+        time.sleep(0.1)
 except KeyboardInterrupt:
     write_to_log(LOG_TOKEN+" KeyboardInterrupt logs manager")
