@@ -5,29 +5,69 @@ import getpass
 #import subprocess
 import datetime
 import sys
+#import threading
+
+#sys.path.insert(0, '../')
+#from config import cmds
 
 # ELM327 v1.5
 #subprocess.Popen("sudo rfcomm connect 0 00:0D:18:3A:67:89 1", shell=True)
 
 
 ## Logger management
-HOME_FOLDER     = '/home/pi'#+getpass.getuser()
-LOG_FOLDER      = HOME_FOLDER+"/Documents/logs/obd_logs/"
-LOGDATA_FOLDER  = HOME_FOLDER+"/Documents/logs/obddata_logs/"
-LOG_FILENAME    = "_obd.log"
-LOGDATA_FILENAME= "_obdData.log"
-LOG_TOKEN       = "[O]"#"[USB_SHARE]"
-LOG_SEP         = ";"
+HOME_FOLDER             = '/home/pi'#+getpass.getuser()
+LOG_FOLDER              = HOME_FOLDER+"/Documents/logs/obd_logs/"
+LOGDATA_FOLDER          = HOME_FOLDER+"/Documents/logs/obddata_logs/"
+LOG_FILENAME            = "_obd.log"
+LOGDATA_FILENAME        = "_obdData.log"
+LOG_TOKEN               = "[O]"#"[USB_SHARE]"
+LOG_SEP                 = ";"
+
+PORT                    = '/dev/rfcomm0'
 
 RECONNECTION_DELAY_SEC  = 10
 RECONNECTION_MAX_TRIALS = 20
 
-LOGDATA_FILE    = None
-LOG_FILE        = None
+LOGDATA_FILE            = None
+LOG_FILE                = None
 
-VERBOSE = True
+VERBOSE                 = False
 
-def write_to_log(msg, printTime = True):
+n_reconnection_trials   = 1
+
+cmds = [
+    obd.commands.THROTTLE_POS,#
+    obd.commands.SPEED, #
+    obd.commands.RPM, #
+    obd.commands.ENGINE_LOAD,# %
+    obd.commands.FUEL_LEVEL,#
+    obd.commands.COOLANT_TEMP,#
+    obd.commands.AMBIANT_AIR_TEMP,
+    obd.commands.INTAKE_PRESSURE,
+    obd.commands.INTAKE_TEMP,
+    obd.commands.MAF,# gps
+    obd.commands.FUEL_RAIL_PRESSURE_DIRECT,
+    obd.commands.BAROMETRIC_PRESSURE,
+    obd.commands.CONTROL_MODULE_VOLTAGE,
+    obd.commands.ACCELERATOR_POS_D,# % throttle
+    obd.commands.ACCELERATOR_POS_E,# % throttle
+    obd.commands.THROTTLE_ACTUATOR, # %
+    obd.commands.OIL_TEMP,
+    #'v': obd.commands.RELATIVE_THROTTLE_POS,#
+    #obd.commands.ACCELERATOR_POS_F,
+    #obd.commands.FUEL_RATE,
+    #obd.commands.ABSOLUTE_LOAD,
+    #obd.commands.COMMANDED_EQUIV_RATIO,
+    #obd.commands.THROTTLE_POS_B,
+    #obd.commands.THROTTLE_POS_C,
+    #obd.commands.COMMANDED_EGR,
+    #obd.commands.FUEL_RAIL_PRESSURE_VAC,
+    #obd.commands.FUEL_PRESSURE,
+    #obd.commands.TIMING_ADVANCE,
+]
+    
+    
+def write_to_log(msg):
     global LOG_FILENAME
     now = datetime.datetime.now()
     hms = str(now.hour)+':'+str(now.minute)+':'+str(now.second)
@@ -36,9 +76,13 @@ def write_to_log(msg, printTime = True):
     log_file.close() 
 
 def write_to_logData(msg, logdata_file, printTime = True):
-    now = datetime.datetime.now()
-    hms = str(now.hour)+':'+str(now.minute)+':'+str(now.second)
-    logdata_file.write(hms + msg + '\n')
+    #now = datetime.datetime.now()
+    # hms = str(now.hour)+':'+str(now.minute)+':'+str(now.second)
+    millis = str(time.time())
+    if printTime:
+        logdata_file.write(millis + msg + '\n')
+    else:
+        logdata_file.write(msg + '\n')
    
 def init_LOG_FILEs():
     global LOG_FILENAME
@@ -51,112 +95,104 @@ def init_LOG_FILEs():
     LOGDATA_FILE = open(LOGDATA_FOLDER+timenow+LOGDATA_FILENAME, 'a')
     LOG_FILENAME = timenow+LOG_FILENAME
     
-
-def reconnect():
-    OBDconnection = obd.OBD(port) 
+    
+def OBDconnect(port, cmds):
+    #OBDconnection = obd.OBD(port)
+    OBDconnection = obd.Async(port)
+    for cmd in cmds:
+        OBDconnection.watch(cmd) # keep track of the RPM
+    OBDconnection.start()
+    return OBDconnection
+  
+    
+def OBDreconnect(port, cmds):
+    OBDconnection = OBDconnect(port, cmds) 
     
     n_reconnection_trials = 0
-
     
     while not OBDconnection.is_connected():
+        
         n_reconnection_trials += 1
-        write_to_log(str(n_reconnection_trials)+" Not connected, reconnecting in "+str(RECONNECTION_DELAY_SEC)+" seconds")
+        msg = str(n_reconnection_trials)+" Not connected, reconn. in "+str(RECONNECTION_DELAY_SEC)+" sec"
+        write_to_log(msg)
         time.sleep(RECONNECTION_DELAY_SEC)
     
         try:
-            OBDconnection = obd.OBD(port) 
+            OBDconnection = OBDconnect(port, cmds) 
         except:
+            OBDconnection.stop()
             write_to_log("Unexpected error: "+str(sys.exc_info()[0]) )
     
         if n_reconnection_trials > RECONNECTION_MAX_TRIALS:
+            OBDconnection.stop()
             write_to_log("Impossible to connect, quit application")
             quit()
     return OBDconnection
     
-    
-    
-cmds = [
-    obd.commands.THROTTLE_POS,#
-    obd.commands.RELATIVE_THROTTLE_POS,#
-    obd.commands.SPEED, #
-    obd.commands.RPM, #
-    obd.commands.ENGINE_LOAD,# %
-    obd.commands.FUEL_LEVEL,#
-    obd.commands.COOLANT_TEMP,#
-    #obd.commands.FUEL_PRESSURE,
-    #obd.commands.TIMING_ADVANCE,
-    obd.commands.AMBIANT_AIR_TEMP,
-    obd.commands.INTAKE_PRESSURE,
-    obd.commands.INTAKE_TEMP,
-    obd.commands.MAF,# gps
-    #obd.commands.FUEL_RAIL_PRESSURE_VAC,
-    obd.commands.FUEL_RAIL_PRESSURE_DIRECT,
-    #obd.commands.COMMANDED_EGR,
-    obd.commands.BAROMETRIC_PRESSURE,
-    obd.commands.CONTROL_MODULE_VOLTAGE,
-    #obd.commands.ABSOLUTE_LOAD,
-    #obd.commands.COMMANDED_EQUIV_RATIO,
-    #obd.commands.THROTTLE_POS_B,
-    #obd.commands.THROTTLE_POS_C,
-    obd.commands.ACCELERATOR_POS_D,# % throttle
-    obd.commands.ACCELERATOR_POS_E,# % throttle
-    #obd.commands.ACCELERATOR_POS_F,
-    obd.commands.THROTTLE_ACTUATOR, # %
-    obd.commands.OIL_TEMP
-    #obd.commands.FUEL_RATE
-]
+#def ts_thread():
+#    ts_sec = 0.01
+#    time.sleep(ts_sec)
 
 #time.sleep(1)
-
-init_LOG_FILEs()
-    
-port = '/dev/rfcomm0'
 #response = OBDconnection.query(obd.commands.ELM_VERSION); print(response)
 
 
-OBDconnection = reconnect()
+OBDconnection = OBDconnect(PORT, cmds)
     
+nDatalines = 0
 
-if OBDconnection.is_connected():
-    nDatalines = 0
+init_LOG_FILEs()
+
+header = "Time_ms"
+for cmd in cmds: 
+    header += LOG_SEP + cmd.name
+write_to_logData(header, LOGDATA_FILE, printTime = False)
+
+write_to_log("Connected to "+PORT)
+
+while True:
+    logged_values = ""
+    error_while_logging = False
+    logged_all_data = True
     
-    header = "Time"
+    #ts_thread = threading.Thread(name='Sampling thread', target=ts_thread)
+    #ts_thread.start()
+    
     for cmd in cmds:
-        header += LOG_SEP + cmd.name
-    write_to_logData(header, LOGDATA_FILE, printTime = False)
-    
-    write_to_log("Connected to "+port)
-    
-    while True:
-        logged_values = ""
-        error_while_logging = False
+        response = OBDconnection.query(cmd)
         
-        for cmd in cmds:
-            response = OBDconnection.query(cmd)
-            
-            #logged_values += LOG_SEP + str(response.value.magnitude)
-            try:
-                logged_values += LOG_SEP + str(response.value.magnitude)
-            except:
-                error_while_logging = True
-                write_to_log("Error in connection, reconnecting")
-                OBDconnection = reconnect()
-                
+        try:
+            logged_values += LOG_SEP + str(response.value.magnitude)
+        except:
+            logged_all_data = False
+            break
+        #try:
+        #    logged_values += LOG_SEP + str(response.value.magnitude)
+        #except:
+        #    error_while_logging = True
+        #    write_to_log("Error in connection, reconnecting")
+        #    OBDconnection.stop()
+        #    OBDconnection = OBDreconnect(PORT, cmds)
+              
+    
+    #print(logged_values)
+    
+    if logged_all_data: #not error_while_logging:
         if VERBOSE:
-            print(logged_values)    
-        
-        #print(logged_values)
-        
-        if not error_while_logging:
-            write_to_logData(logged_values, LOGDATA_FILE)
+            print(logged_values)
+        write_to_logData(logged_values, LOGDATA_FILE)
 
-            nDatalines += 1
-            if (nDatalines % 1000) == 0:
-                write_to_log("Logged "+str(nDatalines)+" lines")
+        nDatalines += 1
+        if (nDatalines % 1000) == 0 :
+            write_to_log("Logged "+str(nDatalines)+" lines")
+    else:
+        if VERBOSE:
+            print("Error in logging")
+        logged_values = ""
+        
+    time.sleep(0.01)    
+    #ts_thread.join()
+    
+OBDconnection.close()
 
-            #time.sleep(0.01)
-        
-        
-    OBDconnection.close()
-   
-    LOGDATA_FILE.close()    
+LOGDATA_FILE.close()    

@@ -6,6 +6,6 @@ To install copy all the 3 files:
 
 in the raspberry and then execute the command: 
 
-> sudo sh install_smartUSB.sh
+> sudo sh install.sh
 
 NB: your raspberry will need access to internet.
