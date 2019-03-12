@@ -5,7 +5,7 @@ import getpass
 #import subprocess
 import datetime
 import sys
-#import threading
+from threading import Thread
 
 #sys.path.insert(0, '../')
 #from config import cmds
@@ -32,6 +32,10 @@ LOGDATA_FILE            = None
 LOG_FILE                = None
 
 VERBOSE                 = False
+
+TS_S                    = 0.5 # sampling time
+TIMEOUT_FOR_STOPLOG     = 60*5# s
+T_INIT                  = time.time()
 
 n_reconnection_trials   = 1
 
@@ -76,9 +80,10 @@ def write_to_log(msg):
     log_file.close() 
 
 def write_to_logData(msg, logdata_file, printTime = True):
+    global T_INIT
     #now = datetime.datetime.now()
     # hms = str(now.hour)+':'+str(now.minute)+':'+str(now.second)
-    millis = str(time.time())
+    millis = str(time.time()-T_INIT)
     if printTime:
         logdata_file.write(millis + msg + '\n')
     else:
@@ -98,7 +103,7 @@ def init_LOG_FILEs():
     
 def OBDconnect(port, cmds):
     #OBDconnection = obd.OBD(port)
-    OBDconnection = obd.Async(port)
+    OBDconnection = obd.Async(port)#, delay_cmds=0.05)
     for cmd in cmds:
         OBDconnection.watch(cmd) # keep track of the RPM
     OBDconnection.start()
@@ -129,21 +134,22 @@ def OBDreconnect(port, cmds):
             quit()
     return OBDconnection
     
-#def ts_thread():
-#    ts_sec = 0.01
-#    time.sleep(ts_sec)
+def threadSamplingTime(ts_s):
+    time.sleep(ts_s)
 
 #time.sleep(1)
 #response = OBDconnection.query(obd.commands.ELM_VERSION); print(response)
 
 
 OBDconnection = OBDconnect(PORT, cmds)
-    
-nDatalines = 0
 
+t_init_for_stoplog  = time.time()
+t_since_stop        = 0
+nDatalines          = 0
+veh_speed           = 0
 init_LOG_FILEs()
 
-header = "Time_ms"
+header = "Time_s"
 for cmd in cmds: 
     header += LOG_SEP + cmd.name
 write_to_logData(header, LOGDATA_FILE, printTime = False)
@@ -155,8 +161,8 @@ while True:
     error_while_logging = False
     logged_all_data = True
     
-    #ts_thread = threading.Thread(name='Sampling thread', target=ts_thread)
-    #ts_thread.start()
+    ts_thread = Thread(target=threadSamplingTime, args=(TS_S,))
+    ts_thread.start()
     
     for cmd in cmds:
         response = OBDconnection.query(cmd)
@@ -166,6 +172,9 @@ while True:
         except:
             logged_all_data = False
             break
+            
+        if cmd.name == 'SPEED':
+            veh_speed = response.value.magnitude
         #try:
         #    logged_values += LOG_SEP + str(response.value.magnitude)
         #except:
@@ -190,8 +199,20 @@ while True:
             print("Error in logging")
         logged_values = ""
         
-    time.sleep(0.01)    
-    #ts_thread.join()
+    #time.sleep(0.01)
+    ts_thread.join()
+    
+    
+    # if vehicle still, proceed to monitor whether stop the log
+    if veh_speed == 0:
+        t_since_stop = time.time()-t_init_for_stoplog
+    else:
+        t_since_stop = 0
+        t_init_for_stoplog = time.time()
+    # stop the log
+    if t_since_stop > TIMEOUT_FOR_STOPLOG:
+        break
+    
     
 OBDconnection.close()
 
