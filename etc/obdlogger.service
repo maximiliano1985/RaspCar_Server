@@ -4,7 +4,6 @@ Description=OBD logger service
 [Service]
 Type=simple
 ExecStart=/usr/local/share/obd_logger.py
-Restart=no
 
 [Install]
 WantedBy=multi-user.target

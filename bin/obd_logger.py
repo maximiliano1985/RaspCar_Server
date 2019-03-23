@@ -33,9 +33,8 @@ LOG_FILE                = None
 
 VERBOSE                 = False
 
-TS_S                    = 0.5 # sampling time
+TS_S                    = 0.1 # sampling time
 TIMEOUT_FOR_STOPLOG     = 60*5# s
-T_INIT                  = time.time()
 
 n_reconnection_trials   = 1
 
@@ -46,16 +45,16 @@ cmds = [
     obd.commands.ENGINE_LOAD,# %
     obd.commands.FUEL_LEVEL,#
     obd.commands.COOLANT_TEMP,#
-    obd.commands.AMBIANT_AIR_TEMP,
-    obd.commands.INTAKE_PRESSURE,
-    obd.commands.INTAKE_TEMP,
+    #obd.commands.AMBIANT_AIR_TEMP,
+    #obd.commands.INTAKE_PRESSURE,
+    #obd.commands.INTAKE_TEMP,
     obd.commands.MAF,# gps
-    obd.commands.FUEL_RAIL_PRESSURE_DIRECT,
-    obd.commands.BAROMETRIC_PRESSURE,
-    obd.commands.CONTROL_MODULE_VOLTAGE,
+    #obd.commands.FUEL_RAIL_PRESSURE_DIRECT,
+    #obd.commands.BAROMETRIC_PRESSURE,
+    #obd.commands.CONTROL_MODULE_VOLTAGE,
     obd.commands.ACCELERATOR_POS_D,# % throttle
-    obd.commands.ACCELERATOR_POS_E,# % throttle
-    obd.commands.THROTTLE_ACTUATOR, # %
+    #obd.commands.ACCELERATOR_POS_E,# % throttle
+    #obd.commands.THROTTLE_ACTUATOR, # %
     obd.commands.OIL_TEMP,
     #'v': obd.commands.RELATIVE_THROTTLE_POS,#
     #obd.commands.ACCELERATOR_POS_F,
@@ -80,10 +79,9 @@ def write_to_log(msg):
     log_file.close() 
 
 def write_to_logData(msg, logdata_file, printTime = True):
-    global T_INIT
     #now = datetime.datetime.now()
     # hms = str(now.hour)+':'+str(now.minute)+':'+str(now.second)
-    millis = str(time.time()-T_INIT)
+    millis = str(time.time())
     if printTime:
         logdata_file.write(millis + msg + '\n')
     else:
@@ -146,7 +144,7 @@ OBDconnection = OBDconnect(PORT, cmds)
 t_init_for_stoplog  = time.time()
 t_since_stop        = 0
 nDatalines          = 0
-veh_speed           = 0
+engine_rpm          = 0
 init_LOG_FILEs()
 
 header = "Time_s"
@@ -164,17 +162,20 @@ while True:
     ts_thread = Thread(target=threadSamplingTime, args=(TS_S,))
     ts_thread.start()
     
-    for cmd in cmds:
-        response = OBDconnection.query(cmd)
-        
+    for cmd in cmds:    
         try:
+            response = OBDconnection.query(cmd)
             logged_values += LOG_SEP + str(response.value.magnitude)
+            
+            if cmd.name == 'RPM':
+                engine_rpm  = response.value.magnitude
+                
         except:
+            write_to_log("Error when logging "+cmd.name)
             logged_all_data = False
+            engine_rpm      = 0
             break
             
-        if cmd.name == 'SPEED':
-            veh_speed = response.value.magnitude
         #try:
         #    logged_values += LOG_SEP + str(response.value.magnitude)
         #except:
@@ -204,13 +205,15 @@ while True:
     
     
     # if vehicle still, proceed to monitor whether stop the log
-    if veh_speed == 0:
+    if engine_rpm == 0:
         t_since_stop = time.time()-t_init_for_stoplog
     else:
         t_since_stop = 0
         t_init_for_stoplog = time.time()
+        
     # stop the log
     if t_since_stop > TIMEOUT_FOR_STOPLOG:
+        write_to_log("Engine RPM zero for "+str(TIMEOUT_FOR_STOPLOG)+" seconds, shutting down!")
         break
     
     
