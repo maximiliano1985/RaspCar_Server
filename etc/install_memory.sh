@@ -1,6 +1,6 @@
 echo "### INSTALLING MEMORY ###"
 
-SIZE_VIRTUAL_MEMORY=50000 # Mbyte
+SIZE_VIRTUAL_MEMORY=20000 # Mbyte
 
 echo "### Adding dwc2 to startup kernel modules"
 echo "dwc2" >> /etc/modules

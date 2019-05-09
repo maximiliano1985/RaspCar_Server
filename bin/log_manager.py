@@ -14,7 +14,7 @@ import select
 import getpass
 
 ## Logger management
-HOME_FOLDER     = '/home/pi'#+getpass.getuser()
+HOME_FOLDER     = '/home/chip'#+getpass.getuser()
 LOG_FOLDER      = HOME_FOLDER+"/Documents/logs/"
 LOG_TOKEN       = "[L]"
 LOG_SEP         = " "

@@ -15,7 +15,7 @@ from threading import Thread
 
 
 ## Logger management
-HOME_FOLDER             = '/home/pi'#+getpass.getuser()
+HOME_FOLDER             = '/home/chip'#+getpass.getuser()
 LOG_FOLDER              = HOME_FOLDER+"/Documents/logs/obd_logs/"
 LOGDATA_FOLDER          = HOME_FOLDER+"/Documents/logs/obddata_logs/"
 LOG_FILENAME            = "_obd.log"
