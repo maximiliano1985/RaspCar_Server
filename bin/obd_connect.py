@@ -7,6 +7,7 @@ import sys
 while True:
     try:
         subprocess.call("sudo rfcomm connect 0 00:0D:18:3A:67:89 1", shell=True)
+        time.sleep(15)
     except:
         print("OBD connect unexpected error: "+str(sys.exc_info()[0]))
     time.sleep(15)
