@@ -6,6 +6,7 @@ sudo apt-get autoremove -y
 
 echo "### Installing dependencies for automatic USB management"
 sudo apt-get install python3-pip -y
+sudo pip3 install --upgrade setuptools
 sudo pip3 install watchdog
 sudo pip3 install datetime
 sudo pip3 install obd
