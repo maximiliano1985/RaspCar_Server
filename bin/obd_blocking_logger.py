@@ -11,9 +11,9 @@ import sys
 
 
 ## Logger management
-HOME_FOLDER     = '/home/pi'#+getpass.getuser()
-LOG_FOLDER      = HOME_FOLDER+"/Documents/logs/obd_logs/"
-LOGDATA_FOLDER  = HOME_FOLDER+"/Documents/logs/obddata_logs/"
+#HOME_FOLDER     = '/home/pi'#+getpass.getuser()
+LOG_FOLDER      = "/var/www/owncloud/data/owncloud/files/logs/obd_logs/" # HOME_FOLDER+"/Documents/logs/obd_logs/"
+LOGDATA_FOLDER  = "/var/www/owncloud/data/owncloud/files/logs/obddata_logs/" # HOME_FOLDER+"/Documents/logs/obddata_logs/"
 LOG_FILENAME    = "_obd.log"
 LOGDATA_FILENAME= "_obdData.log"
 LOG_TOKEN       = "[O]"#"[USB_SHARE]"
