@@ -12,9 +12,16 @@ sudo pip3 install datetime
 sudo pip3 install obd
 
 echo "### Creating folder for logs (available only for pi user)"
-sudo mkdir /home/chip/Documents/
-sudo mkdir /home/chip/Documents/logs
-sudo mkdir /home/chip/Documents/logs/usb_share
-sudo mkdir /home/chip/Documents/logs/obd_logs
-sudo mkdir /home/chip/Documents/logs/obddata_logs
-sudo chmod -R 777 /home/chip/Documents/logs
+#sudo mkdir /home/chip/Documents/
+#sudo mkdir /home/chip/Documents/logs
+#sudo mkdir /home/chip/Documents/logs/usb_share
+#sudo mkdir /home/chip/Documents/logs/obd_logs
+#sudo mkdir /home/chip/Documents/logs/obddata_logs
+#sudo chmod -R 777 /home/chip/Documents/logs
+sudo mkdir /var/www/owncloud/data/owncloud/files/logs
+sudo mkdir /var/www/owncloud/data/owncloud/files/logs/usb_share
+sudo mkdir /var/www/owncloud/data/owncloud/files/logs/obd_logs
+sudo mkdir /var/www/owncloud/data/owncloud/files/logs/obddata_logs
+sudo chmod -R 777 /var/www/owncloud/data/owncloud/files/logs/
+
+

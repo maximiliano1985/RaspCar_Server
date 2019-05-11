@@ -14,8 +14,8 @@ import select
 import getpass
 
 ## Logger management
-HOME_FOLDER     = '/home/chip'#+getpass.getuser()
-LOG_FOLDER      = HOME_FOLDER+"/Documents/logs/"
+#HOME_FOLDER     = '/home/chip'#+getpass.getuser()
+LOG_FOLDER      = "/var/www/owncloud/data/owncloud/files/logs/"
 LOG_TOKEN       = "[L]"
 LOG_SEP         = " "
 LOG_FILENAME    = None
