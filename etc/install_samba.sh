@@ -18,7 +18,7 @@ echo "  Guest ok = yes" >> /etc/samba/smb.conf
 echo "" >> /etc/samba/smb.conf
 echo "[logs]" >> /etc/samba/smb.conf
 echo "  Comment = Logs Folder" >> /etc/samba/smb.conf
-echo "  Path = /var/www/owncloud/data/raspi/files/logs/" >> /etc/samba/smb.conf
+echo "  Path = /home/pi/Documents/logs/" >> /etc/samba/smb.conf
 echo "  Browseable = yes" >> /etc/samba/smb.conf
 echo "  Writeable = Yes" >> /etc/samba/smb.conf
 echo "  only guest = no" >> /etc/samba/smb.conf

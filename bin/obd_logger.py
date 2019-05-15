@@ -16,9 +16,9 @@ from threading import Thread
 
 ## Logger management
 #HOME_FOLDER             = '/home/pi'#+getpass.getuser()
-LOG_FOLDER              = "/var/www/owncloud/data/raspi/files/logs/obd_logs/"
+LOG_FOLDER              = "/home/pi/Documents/logs/obd_logs/"#"/var/www/owncloud/data/raspi/files/logs/obd_logs/"
                             #HOME_FOLDER+"/Documents/logs/obd_logs/"
-LOGDATA_FOLDER          = "/var/www/owncloud/data/raspi/files/logs/obddata_logs/"
+LOGDATA_FOLDER          = "/home/pi/Documents/logs/obddata_logs/"#"/var/www/owncloud/data/raspi/files/logs/obddata_logs/"
                             #HOME_FOLDER+"/Documents/logs/obddata_logs/"
 LOG_FILENAME            = "_obd.log"
 LOGDATA_FILENAME        = "_obdData.log"

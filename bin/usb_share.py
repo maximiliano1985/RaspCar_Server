@@ -16,7 +16,7 @@ ACT_TIME_OUT = 30 # s
 
 ## Logger management
 #HOME_FOLDER     = '/home/pi'#+getpass.getuser()
-LOG_FOLDER      = "/var/www/owncloud/data/raspi/files/logs/usb_share/" #HOME_FOLDER+"/Documents/logs/usb_share/"
+LOG_FOLDER      = "/home/pi/Documents/logs/usb_share/"#"/var/www/owncloud/data/raspi/files/logs/usb_share/" #HOME_FOLDER+"/Documents/logs/usb_share/"
 LOG_TOKEN       = "[U]"#"[USB_SHARE]"
 LOG_SEP         = " "
 LOG_FILENAME    = None
