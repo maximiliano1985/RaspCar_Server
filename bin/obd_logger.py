@@ -15,9 +15,11 @@ from threading import Thread
 
 
 ## Logger management
-HOME_FOLDER             = '/home/pi'#+getpass.getuser()
-LOG_FOLDER              = HOME_FOLDER+"/Documents/logs/obd_logs/"
-LOGDATA_FOLDER          = HOME_FOLDER+"/Documents/logs/obddata_logs/"
+#HOME_FOLDER             = '/home/pi'#+getpass.getuser()
+LOG_FOLDER              = "/var/www/owncloud/data/raspi/files/logs/obd_logs/"
+                            #HOME_FOLDER+"/Documents/logs/obd_logs/"
+LOGDATA_FOLDER          = "/var/www/owncloud/data/raspi/files/logs/obddata_logs/"
+                            #HOME_FOLDER+"/Documents/logs/obddata_logs/"
 LOG_FILENAME            = "_obd.log"
 LOGDATA_FILENAME        = "_obdData.log"
 LOG_TOKEN               = "[O]"#"[USB_SHARE]"
@@ -138,6 +140,10 @@ def threadSamplingTime(ts_s):
 #time.sleep(1)
 #response = OBDconnection.query(obd.commands.ELM_VERSION); print(response)
 
+write_to_log("Refresh OwnCloud index")
+os.system("sudo -u www-data php  /var/www/owncloud/occ files:scan --all")
+
+
 
 OBDconnection = OBDconnect(PORT, cmds)
 
@@ -216,7 +222,14 @@ while True:
         write_to_log("Engine RPM zero for "+str(TIMEOUT_FOR_STOPLOG)+" seconds, shutting down!")
         break
     
-    
+write_to_log("Closing OBD connection") 
 OBDconnection.close()
 
+write_to_log("Closing log data file") 
 LOGDATA_FILE.close()    
+
+write_to_log("Refresh OwnCloud index")
+os.system("sudo -u www-data php  /var/www/owncloud/occ files:scan --all")
+
+write_to_log("Exit") 
+

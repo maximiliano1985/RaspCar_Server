@@ -14,8 +14,7 @@ import select
 import getpass
 
 ## Logger management
-HOME_FOLDER     = '/home/pi'#+getpass.getuser()
-LOG_FOLDER      = HOME_FOLDER+"/Documents/logs/"
+LOG_FOLDER      = "/var/www/owncloud/data/raspi/files/logs/"#HOME_FOLDER+"/Documents/logs/"
 LOG_TOKEN       = "[L]"
 LOG_SEP         = " "
 LOG_FILENAME    = None
