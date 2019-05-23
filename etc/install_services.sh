@@ -12,7 +12,7 @@ sudo cp ../etc/obdconnect.service /etc/systemd/system
 
 echo "### Installation of service for log files management"
 sudo cp log_manager.py /usr/local/share
-#sudo cp ../etc/logmanager.service /etc/systemd/system
+sudo cp ../etc/logmanager.service /etc/systemd/system
 
 echo "### Enabling installed services"
 cd /usr/local/share/
