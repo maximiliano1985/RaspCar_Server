@@ -32,5 +32,5 @@ sudo systemctl start usbshare.service
 sudo systemctl enable obdlogger.service
 sudo systemctl start obdlogger.service
 
-#sudo systemctl enable logmanager.service
-#sudo systemctl start logmanager.service
+sudo systemctl enable logmanager.service
+sudo systemctl start logmanager.service
