@@ -18,4 +18,4 @@ sudo mkdir /home/pi/Documents/logs
 sudo mkdir /home/pi/Documents/logs/usb_share
 sudo mkdir /home/pi/Documents/logs/obd_logs
 sudo mkdir /home/pi/Documents/logs/obddata_logs
-sudo chmod -R 777 /var/www/owncloud
+sudo chmod -R 777 /home/pi/Documents
