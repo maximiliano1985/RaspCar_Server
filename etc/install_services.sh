@@ -11,8 +11,8 @@ sudo cp ../etc/obdlogger.service /etc/systemd/system
 sudo cp ../etc/obdconnect.service /etc/systemd/system
 
 echo "### Installation of service for log files management"
-sudo cp log_manager.py /usr/local/share
-sudo cp ../etc/logmanager.service /etc/systemd/system
+#sudo cp log_manager.py /usr/local/share
+#sudo cp ../etc/logmanager.service /etc/systemd/system
 
 echo "### Enabling installed services"
 cd /usr/local/share/
@@ -26,8 +26,8 @@ sudo systemctl daemon-reload
 sudo systemctl enable obdconnect.service
 sudo systemctl start obdconnect.service
 
-sudo systemctl enable usbshare.service
-sudo systemctl start usbshare.service
+#sudo systemctl enable usbshare.service
+#sudo systemctl start usbshare.service
 
 sudo systemctl enable obdlogger.service
 sudo systemctl start obdlogger.service
