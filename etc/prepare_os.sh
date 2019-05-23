@@ -1,4 +1,5 @@
 echo "### PREPARING OS ###"
+sudo apt-get update
 
 echo "### Cleaning the OS installation"
 sudo apt-get clean
