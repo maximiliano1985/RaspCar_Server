@@ -17,7 +17,7 @@ echo "### Installation of service for log files management"
 echo "### Enabling installed services"
 cd /usr/local/share/
 sudo chmod +x usb_share.py
-sudo chmod +x log_manager.py
+#sudo chmod +x log_manager.py
 sudo chmod +x obd_connect.py
 sudo chmod +x obd_logger.py
 
@@ -32,5 +32,5 @@ sudo systemctl start obdconnect.service
 sudo systemctl enable obdlogger.service
 sudo systemctl start obdlogger.service
 
-sudo systemctl enable logmanager.service
-sudo systemctl start logmanager.service
+#sudo systemctl enable logmanager.service
+#sudo systemctl start logmanager.service
