@@ -4,6 +4,8 @@ import time
 import sys
 
 # ELM327 v1.5
+subprocess.call("Pair 00:0D:18:3A:67:89 1", shell=True)
+
 while True:
     try:
         subprocess.call("sudo rfcomm connect 0 00:0D:18:3A:67:89 1", shell=True)
