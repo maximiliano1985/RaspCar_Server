@@ -2,11 +2,22 @@
 # test operation of mcp3421 on i2c bus #1
 
 import smbus
+import os
 import time
 
-DEBUG = 1
+DEBUG = 0
 
-# battery specific data
+ZERO_VOLTAGE = 3.59
+MIN_CHARGE_PERC_THRESHOLD = 15 # below this, turn off the system
+
+SLEEP_TIME_SECS = 30 # (s) measure the battery status every X seconds
+
+# Battery specific data
+BATTERY_MAX_VOLTAGE = 3.7
+slope_perc = 100.0/(BATTERY_MAX_VOLTAGE-ZERO_VOLTAGE)
+intercept_perc = 0 - slope_perc*ZERO_VOLTAGE
+
+# ADC specific data
 ADCgain   = 4.096/262144
 ADCoffset = 0*2**18/2
 VoltageDivider = 100.0e3/(100e3+120e3)
@@ -32,7 +43,7 @@ if DEBUG:
     fout = open('adc_log.txt', 'w')
 
 while True:
-    time.sleep(1)
+    time.sleep(SLEEP_TIME_SECS)
     mcpdata = bus.read_i2c_block_data(deltasig[0],config_byte,4)
     conversionresults = mcpdata[2] + (mcpdata[1] << 8) + (mcpdata[0] << 16)
     print('Conversion results =',(conversionresults), 'config-byte:',hex(mcpdata[3]))
@@ -42,13 +53,23 @@ while True:
         conversionresults -= 0x20000     #     subtract off the sign extension bit
 
     batt_chrg_V = (conversionresults - ADCoffset)*ADCgain/VoltageDivider
+    
+    batt_chrg_perc = slope_perc*batt_chrg_V + intercept_perc
+    batt_chrg_perc = round( max(min(batt_chrg_perc, 100), 0), 2)
+    
     #print('Conversion results =',hex(conversionresults), 'config-byte:',hex(mcpdata[3]))
     print('Raw:',(conversionresults),'- Cooked: %.3f' % batt_chrg_V,'\bV',
-          '- config-byte:',hex(mcpdata[3]))
+          ' (%.2f) '% batt_chrg_perc,'\b%',
+          '- config-byte:',hex(mcpdata[3]) )
 
     if DEBUG:
-        fout.write('%f\n'%batt_chrg_V)
-
+        fout.write('%f\n'%batt_chrg_perc)
+    
+    if not DEBUG:
+        low_battery      = batt_chrg_perc < MIN_CHARGE_PERC_THRESHOLD
+        charging_battery = False ### EDIT THIS AFTER A MULTIPLEXER IS USED TO MONITOR THE POWERBOOST 1000C
+        if low_battery and not charging_battery:
+            os.system('shutdown -s')
 
 
 if DEBUG:

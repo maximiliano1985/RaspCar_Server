@@ -1,0 +1,10 @@
+[Unit]
+Description=Log management service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/share/battery_status_i2c.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
