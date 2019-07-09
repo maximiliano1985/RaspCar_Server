@@ -21,6 +21,9 @@ intercept_perc = 0 - slope_perc*ZERO_VOLTAGE
 ADCgain   = 4.096/262144
 ADCoffset = 0*2**18/2
 VoltageDivider = 100.0e3/(100e3+120e3)
+
+VoltageDividerUSB = 100.0e3/(100e3+100e3+120e3)
+
 # NOTES:
 # * Tension divider with approx gain of VoltageDivider = 0.45 used to lower
 #   the input voltage from 3.7 V of the battery to +/-2.048 of the ADC.
@@ -39,8 +42,8 @@ config_byte = 0x1c          # continuous mode, 18-bit resolution, gain = 1.
 bus = smbus.SMBus(1)
 bus.write_byte(deltasig[0],config_byte) # configure the adc
 
-if DEBUG:
-    fout = open('adc_log.txt', 'w')
+
+fout = open('/home/pi/Documents/adc_log.txt', 'w')
 
 while True:
     time.sleep(SLEEP_TIME_SECS)
@@ -62,15 +65,14 @@ while True:
           ' (%.2f) '% batt_chrg_perc,'\b%',
           '- config-byte:',hex(mcpdata[3]) )
 
-    if DEBUG:
-        fout.write('%f\n'%batt_chrg_perc)
+    fout.write('%f\n'%batt_chrg_perc)
     
-    if not DEBUG:
-        low_battery      = batt_chrg_perc < MIN_CHARGE_PERC_THRESHOLD
-        charging_battery = False ### EDIT THIS AFTER A MULTIPLEXER IS USED TO MONITOR THE POWERBOOST 1000C
-        if low_battery and not charging_battery:
-            os.system('shutdown -s')
+    low_battery      = batt_chrg_perc < MIN_CHARGE_PERC_THRESHOLD
+    charging_battery = False ### EDIT THIS AFTER A MULTIPLEXER IS USED TO MONITOR THE POWERBOOST 1000C
+    if low_battery and not charging_battery:
+        fout.write('Battery low, shuting down\n')
+        fout.close()
+        os.system('sudo halt')
 
 
-if DEBUG:
-    fout.close()
+fout.close()
