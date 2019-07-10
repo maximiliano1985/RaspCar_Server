@@ -7,6 +7,8 @@ import time
 
 DEBUG = 0
 
+outfilename = '/home/pi/Documents/logs/'+str(round(time.time()))+'_adc_log.txt'
+
 ZERO_VOLTAGE = 3.59
 MIN_CHARGE_PERC_THRESHOLD = 15 # below this, turn off the system
 
@@ -42,8 +44,7 @@ config_byte = 0x1c          # continuous mode, 18-bit resolution, gain = 1.
 bus = smbus.SMBus(1)
 bus.write_byte(deltasig[0],config_byte) # configure the adc
 
-
-fout = open('/home/pi/Documents/logs/'+str(round(time.time()))+'_adc_log.txt', 'w')
+fout = open(outfilename, 'w')
 
 while True:
     time.sleep(SLEEP_TIME_SECS)

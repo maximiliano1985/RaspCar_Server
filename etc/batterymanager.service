@@ -3,7 +3,7 @@ Description=Log management service
 
 [Service]
 Type=simple
-ExecStart=/usr/local/share/battery_manager.py
+ExecStart=sudo /usr/local/share/battery_manager.py
 Restart=always
 
 [Install]
