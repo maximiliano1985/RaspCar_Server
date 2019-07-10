@@ -43,7 +43,7 @@ bus = smbus.SMBus(1)
 bus.write_byte(deltasig[0],config_byte) # configure the adc
 
 
-fout = open('/home/pi/Documents/adc_log.txt', 'w')
+fout = open('/home/pi/Documents/logs/'+round(time.time())+'_adc_log.txt', 'w')
 
 while True:
     time.sleep(SLEEP_TIME_SECS)
@@ -72,7 +72,7 @@ while True:
     if low_battery and not charging_battery:
         fout.write('Battery low, shuting down\n')
         fout.close()
-        os.system('sudo halt')
+        os.system('sudo shutdown -h now')
 
 
 fout.close()
