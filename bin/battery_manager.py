@@ -44,8 +44,6 @@ config_byte = 0x1c          # continuous mode, 18-bit resolution, gain = 1.
 bus = smbus.SMBus(1)
 bus.write_byte(deltasig[0],config_byte) # configure the adc
 
-fout = open(outfilename, 'w')
-
 while True:
     time.sleep(SLEEP_TIME_SECS)
     mcpdata = bus.read_i2c_block_data(deltasig[0],config_byte,4)
@@ -66,14 +64,15 @@ while True:
           ' (%.2f) '% batt_chrg_perc,'\b%',
           '- config-byte:',hex(mcpdata[3]) )
 
+    fout = open(outfilename,'a')
     fout.write('%f\n'%batt_chrg_perc)
-    
+    fout.close()
+
     low_battery      = batt_chrg_perc < MIN_CHARGE_PERC_THRESHOLD
     charging_battery = False ### EDIT THIS AFTER A MULTIPLEXER IS USED TO MONITOR THE POWERBOOST 1000C
     if low_battery and not charging_battery:
+        fout = open(outfilename,'a')
         fout.write('Battery low, shuting down\n')
         fout.close()
+
         os.system('sudo shutdown -h now')
-
-
-fout.close()
