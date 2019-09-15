@@ -72,8 +72,8 @@ while True:
         print('Conversion results =',(conversionresults), 'config-byte:',hex(mcpdata[3]))
         #print('Conversion results =',hex(conversionresults), 'config-byte:',hex(mcpdata[3]))
         print('Raw:',(conversionresults),
-            '- Cooked: %.3f' % batt_chrg_V,'\bV',
-            ' (%.2f) '% batt_chrg_perc,'\b%',
+            '- Cooked: %.3f' % batt_chrg_V,' V',
+            ' (%.2f) '% batt_chrg_perc,' %',
              '- config-byte:',hex(mcpdata[3]) )
               
     if low_battery and not charging_battery and not DEBUG:
