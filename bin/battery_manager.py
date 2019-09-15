@@ -5,7 +5,7 @@ import smbus
 import os
 import time
 
-DEBUG = 0
+DEBUG = False
 
 outfilename = '/home/pi/Documents/logs/'+str(round(time.time()))+'_adc_log.txt'
 
@@ -13,6 +13,9 @@ ZERO_VOLTAGE = 3.59
 MIN_CHARGE_PERC_THRESHOLD = 15 # below this, turn off the system
 
 SLEEP_TIME_SECS = 30 # (s) measure the battery status every X seconds
+
+if DEBUG:
+    SLEEP_TIME_SECS = 1
 
 # Battery specific data
 BATTERY_MAX_VOLTAGE = 3.7
@@ -48,7 +51,6 @@ while True:
     time.sleep(SLEEP_TIME_SECS)
     mcpdata = bus.read_i2c_block_data(deltasig[0],config_byte,4)
     conversionresults = mcpdata[2] + (mcpdata[1] << 8) + (mcpdata[0] << 16)
-    print('Conversion results =',(conversionresults), 'config-byte:',hex(mcpdata[3]))
 
     conversionresults &= 0x1ffff     # lop off the sign ADC's sign extension
     if mcpdata[0] & 0x80:            # if the data was negative 
@@ -58,11 +60,6 @@ while True:
     
     batt_chrg_perc = slope_perc*batt_chrg_V + intercept_perc
     batt_chrg_perc = round( max(min(batt_chrg_perc, 100), 0), 2)
-    
-    #print('Conversion results =',hex(conversionresults), 'config-byte:',hex(mcpdata[3]))
-    print('Raw:',(conversionresults),'- Cooked: %.3f' % batt_chrg_V,'\bV',
-          ' (%.2f) '% batt_chrg_perc,'\b%',
-          '- config-byte:',hex(mcpdata[3]) )
 
     fout = open(outfilename,'a')
     fout.write('%f\n'%batt_chrg_perc)
@@ -70,7 +67,16 @@ while True:
 
     low_battery      = batt_chrg_perc < MIN_CHARGE_PERC_THRESHOLD
     charging_battery = False ### EDIT THIS AFTER A MULTIPLEXER IS USED TO MONITOR THE POWERBOOST 1000C
-    if low_battery and not charging_battery:
+    
+    if DEBUG:
+        print('Conversion results =',(conversionresults), 'config-byte:',hex(mcpdata[3]))
+        #print('Conversion results =',hex(conversionresults), 'config-byte:',hex(mcpdata[3]))
+        print('Raw:',(conversionresults),
+            '- Cooked: %.3f' % batt_chrg_V,'\bV',
+            ' (%.2f) '% batt_chrg_perc,'\b%',
+             '- config-byte:',hex(mcpdata[3]) )
+              
+    if low_battery and not charging_battery and not DEBUG:
         fout = open(outfilename,'a')
         fout.write('Battery low, shuting down\n')
         fout.close()
