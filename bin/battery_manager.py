@@ -15,6 +15,8 @@ SLEEP_TIME_SECS = 30 # (s) measure the battery status every X seconds
 if DEBUG:
     SLEEP_TIME_SECS = 1
 
+MIN_CHARGE_PERC_THRESHOLD = 15 # below this, turn off the system
+
 
 # Open i2c bus
 bus = smbus.SMBus(1)
@@ -72,7 +74,7 @@ def readV_mcp3421(bus, addr_mcp3421, config_byte, DEBUG=False):
     USB_chrg_V = (conversionresults - ADCoffset)*ADCgain/VoltageDivider
     
     if DEBUG:
-        print('<mcp> conversion res. %f\tconfig-byte %s\tUSB_chrg_V %f\n' %
+        print('<mcp> conversion res. %f\tconfig-byte %s\tUSB_chrg_V %f' %
             (conversionresults, hex(mcpdata[3]), USB_chrg_V) )
              
     return USB_chrg_V
@@ -82,8 +84,7 @@ def readV_mcp3421(bus, addr_mcp3421, config_byte, DEBUG=False):
 def read_ina219(ina, DEBUG=False):
     # Power management config
     ZERO_VOLTAGE = 3.59
-    MIN_CHARGE_PERC_THRESHOLD = 15 # below this, turn off the system
-    
+        
     # Battery specific data
     BATTERY_MAX_VOLTAGE = 3.7
     
@@ -101,7 +102,7 @@ def read_ina219(ina, DEBUG=False):
     vperc = round( max(min(vperc, 100), 0), 2)
     
     if DEBUG:
-        print('<ina> v %f\tvperc %f\tc %f\tp %f\n' % (v, vperc, c, p) )
+        print('<ina> v %f\tvperc %f\tc %f\tp %f' % (v, vperc, c, p) )
     
     return [v, vperc, c, p]
 
