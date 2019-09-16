@@ -17,6 +17,11 @@ sudo pip3 install datetime
 sudo pip3 install obd
 #sudo pip3 install gpiozero
 sudo pip3 instecho
+#sudo pip3 install git+git://github.com/chrisb2/pi_ina219.git
+#sudo pip3 install adafruit-blinka
+sudo pip3 install pi-ina219
+
+sudo pip3 install circuitpython-build-tools
 
 echo "### Creating folder for logs (available only for pi user)"
 sudo mkdir /home/pi/Documents

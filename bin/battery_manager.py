@@ -4,31 +4,45 @@
 import smbus
 import os
 import time
+from ina219 import INA219
 
+# General config
 DEBUG = False
 
 outfilename = '/home/pi/Documents/logs/'+str(round(time.time()))+'_adc_log.txt'
 
-ZERO_VOLTAGE = 3.59
-MIN_CHARGE_PERC_THRESHOLD = 15 # below this, turn off the system
-
 SLEEP_TIME_SECS = 30 # (s) measure the battery status every X seconds
-
 if DEBUG:
     SLEEP_TIME_SECS = 1
 
-# Battery specific data
-BATTERY_MAX_VOLTAGE = 3.7
-slope_perc = 100.0/(BATTERY_MAX_VOLTAGE-ZERO_VOLTAGE)
-intercept_perc = 0 - slope_perc*ZERO_VOLTAGE
 
-# ADC specific data
-ADCgain   = 4.096/262144
-ADCoffset = 0*2**18/2
-VoltageDivider = 100.0e3/(100e3+120e3)
+# Open i2c bus
+bus = smbus.SMBus(1)
 
-VoltageDividerUSB = 100.0e3/(100e3+100e3+120e3)
+# i2C addresses and config
+deltasigUSB_mcp3421 = [0x68,0x69,0x6a,0x06b,0x6c,0x6d,0x6e,0x6f]           # device addresses
+addrUSB_mcp3421 = deltasigUSB_mcp3421[0]
+config_byte = 0x1c          # continuous mode, 18-bit resolution, gain = 1.
+bus.write_byte(addrUSB_mcp3421,config_byte) # configure the adc
 
+SHUNT_OHMS = 0.1
+# from https://raspi.tv/2017/how-much-power-does-pi-zero-w-use
+# we know that pizero at 5.2V (usb) consumes at max 300 mA (with margin), hence 1.6 W.
+# It means that at 3.7 V (battery) and 1.6 W, it absorbes 0.43 A > 0.5 A (with margin) 
+MAX_EXPECTED_AMPS = 2
+inaBATT = INA219(shunt_ohms         = SHUNT_OHMS,
+                 #max_expected_amps  = MAX_EXPECTED_AMPS, 
+                 address            = 0x40)
+inaBATT.configure(voltage_range = inaBATT.RANGE_16V,
+                  gain          = inaBATT.GAIN_AUTO,
+                  bus_adc       = inaBATT.ADC_128SAMP,
+                  shunt_adc     = inaBATT.ADC_128SAMP)
+                  
+# Init out file
+fout = open(outfilename,'a')
+fout.write('usb_V;batt_V;batt_Vperc;batt_Amp;batt_Pow\n')
+fout.close()
+    
 # NOTES:
 # * Tension divider with approx gain of VoltageDivider = 0.45 used to lower
 #   the input voltage from 3.7 V of the battery to +/-2.048 of the ADC.
@@ -41,44 +55,83 @@ VoltageDividerUSB = 100.0e3/(100e3+100e3+120e3)
 # * Generalizing the above formula: ADCcounts = Vbatt*VoltageDivider/ADCgain + ADCoffset
 #   Which inverted give us: Vbatt = (ADCcounts - ADCoffset)*ADCgain/VoltageDivider
 
-deltasig = [0x68,0x69,0x6a,0x06b,0x6c,0x6d,0x6e,0x6f]           # device addresses
-config_byte = 0x1c          # continuous mode, 18-bit resolution, gain = 1.
 
-bus = smbus.SMBus(1)
-bus.write_byte(deltasig[0],config_byte) # configure the adc
-
-while True:
-    time.sleep(SLEEP_TIME_SECS)
-    mcpdata = bus.read_i2c_block_data(deltasig[0],config_byte,4)
+def readV_mcp3421(bus, addr_mcp3421, config_byte, DEBUG=False):
+    # ADC specific data, depend on hardware config
+    ADCgain   = 4.096/262144
+    ADCoffset = 0*2**18/2
+    VoltageDivider = 100.0e3/(100e3+120e3+100e3)
+    
+    mcpdata = bus.read_i2c_block_data(addr_mcp3421,config_byte,4)
     conversionresults = mcpdata[2] + (mcpdata[1] << 8) + (mcpdata[0] << 16)
-
+    
     conversionresults &= 0x1ffff     # lop off the sign ADC's sign extension
     if mcpdata[0] & 0x80:            # if the data was negative 
         conversionresults -= 0x20000     #     subtract off the sign extension bit
-
-    batt_chrg_V = (conversionresults - ADCoffset)*ADCgain/VoltageDivider
     
-    batt_chrg_perc = slope_perc*batt_chrg_V + intercept_perc
-    batt_chrg_perc = round( max(min(batt_chrg_perc, 100), 0), 2)
-
-    fout = open(outfilename,'a')
-    fout.write('%f\n'%batt_chrg_perc)
-    fout.close()
-
-    low_battery      = batt_chrg_perc < MIN_CHARGE_PERC_THRESHOLD
-    charging_battery = False ### EDIT THIS AFTER A MULTIPLEXER IS USED TO MONITOR THE POWERBOOST 1000C
+    USB_chrg_V = (conversionresults - ADCoffset)*ADCgain/VoltageDivider
     
     if DEBUG:
-        print('Conversion results =',(conversionresults), 'config-byte:',hex(mcpdata[3]))
-        #print('Conversion results =',hex(conversionresults), 'config-byte:',hex(mcpdata[3]))
-        print('Raw:',(conversionresults),
-            '- Cooked: %.3f' % batt_chrg_V,' V',
-            ' (%.2f) '% batt_chrg_perc,' %',
-             '- config-byte:',hex(mcpdata[3]) )
-              
-    if low_battery and not charging_battery and not DEBUG:
+        print('<mcp> conversion res. %f\tconfig-byte %s\tUSB_chrg_V %f\n' %
+            (conversionresults, hex(mcpdata[3]), USB_chrg_V) )
+             
+    return USB_chrg_V
+
+
+
+def read_ina219(ina, DEBUG=False):
+    # Power management config
+    ZERO_VOLTAGE = 3.59
+    MIN_CHARGE_PERC_THRESHOLD = 15 # below this, turn off the system
+    
+    # Battery specific data
+    BATTERY_MAX_VOLTAGE = 3.7
+    
+    # read sensor
+    ina.wake()
+    v = ina.voltage()
+    c = ina.current()
+    p = ina.power()
+    ina.sleep()
+    
+    slope_perc = 100.0/(BATTERY_MAX_VOLTAGE-ZERO_VOLTAGE)
+    intercept_perc = 0 - slope_perc*ZERO_VOLTAGE
+    
+    vperc = slope_perc*v + intercept_perc
+    vperc = round( max(min(vperc, 100), 0), 2)
+    
+    if DEBUG:
+        print('<ina> v %f\tvperc %f\tc %f\tp %f\n' % (v, vperc, c, p) )
+    
+    return [v, vperc, c, p]
+
+
+# main loop
+while True:
+    time.sleep(SLEEP_TIME_SECS)
+    
+    # get data from mcp3421
+    usb_V = readV_mcp3421(bus, addrUSB_mcp3421, config_byte, DEBUG)
+    # detect if the usb has been disconnected
+    usb_is_connected = usb_V > 0.1
+    
+    res = read_ina219(inaBATT, DEBUG)
+    batt_V     = res[0] # Volts
+    batt_Vperc = res[1] # %
+    batt_Amp   = res[2] # Ampere
+    batt_Pow   = res[3] # Watt
+    
+    # detect if battery is low
+    battery_is_low  = batt_Vperc < MIN_CHARGE_PERC_THRESHOLD
+
+    # store the data
+    fout = open(outfilename,'a')
+    fout.write('%f;%f;%f;%f;%f\n'%(usb_V, batt_V, batt_Vperc, batt_Amp, batt_Pow))
+    fout.close()
+    
+    if battery_is_low and not usb_is_connected and not DEBUG:
         fout = open(outfilename,'a')
-        fout.write('Battery low, shuting down\n')
+        fout.write('Battery low, shutting down\n')
         fout.close()
 
         os.system('sudo shutdown -h now')
