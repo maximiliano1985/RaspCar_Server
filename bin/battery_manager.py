@@ -35,10 +35,10 @@ MAX_EXPECTED_AMPS = 2
 inaBATT = INA219(shunt_ohms         = SHUNT_OHMS,
                  #max_expected_amps  = MAX_EXPECTED_AMPS, 
                  address            = 0x40)
-inaBATT.configure(voltage_range = inaBATT.RANGE_16V,
-                  gain          = inaBATT.GAIN_AUTO,
-                  bus_adc       = inaBATT.ADC_128SAMP,
-                  shunt_adc     = inaBATT.ADC_128SAMP)
+inaBATT.configure(voltage_range = inaBATT.RANGE_16V)#,
+                  #gain          = inaBATT.GAIN_AUTO,
+                  #bus_adc       = inaBATT.ADC_128SAMP,
+                  #shunt_adc     = inaBATT.ADC_128SAMP)
                   
 # Init out file
 fout = open(outfilename,'a')
@@ -83,17 +83,17 @@ def readV_mcp3421(bus, addr_mcp3421, config_byte, DEBUG=False):
 
 def read_ina219(ina, DEBUG=False):
     # Power management config
-    ZERO_VOLTAGE = 3.59
+    ZERO_VOLTAGE = 3.6
         
     # Battery specific data
     BATTERY_MAX_VOLTAGE = 3.7
     
     # read sensor
-    ina.wake()
+    #ina.wake()
     v = ina.voltage()
     c = ina.current()
     p = ina.power()
-    ina.sleep()
+    #ina.sleep()
     
     slope_perc = 100.0/(BATTERY_MAX_VOLTAGE-ZERO_VOLTAGE)
     intercept_perc = 0 - slope_perc*ZERO_VOLTAGE
