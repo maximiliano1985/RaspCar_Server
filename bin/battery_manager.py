@@ -83,10 +83,10 @@ def readV_mcp3421(bus, addr_mcp3421, config_byte, DEBUG=False):
 
 def read_ina219(ina, DEBUG=False):
     # Power management config
-    ZERO_VOLTAGE = 3.6
+    ZERO_VOLTAGE = 3.5
         
     # Battery specific data
-    BATTERY_MAX_VOLTAGE = 3.7
+    BATTERY_MAX_VOLTAGE = 4 #3.7
     
     # read sensor
     #ina.wake()
