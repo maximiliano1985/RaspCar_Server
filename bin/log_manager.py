@@ -51,7 +51,7 @@ def process_log_file(f_log):
     global SEMAPHORE
     # if someone else is writing in the main log file, wait until the semaphore is released
     while SEMAPHORE == SEM_RED:
-        sleep(0.0001)
+        sleep(0.01)
     if SEMAPHORE == SEM_GREEN:
         SEMAPHORE = SEM_RED
         log_line = f_log.stdout.readline()
@@ -91,6 +91,6 @@ try:
         if p_obd.poll(1):
             process_log_file(f_obd) 
              
-        time.sleep(0.1)
+        #time.sleep(0.1)
 except KeyboardInterrupt:
     write_to_log(LOG_TOKEN+" KeyboardInterrupt logs manager")
