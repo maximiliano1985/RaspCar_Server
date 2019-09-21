@@ -5,11 +5,21 @@ import smbus
 import os
 import time
 from ina219 import INA219
+import datetime
 
 # General config
 DEBUG = False
 
-outfilename = '/home/pi/Documents/logs/'+str(round(time.time()))+'_adc_log.txt'
+T_START_EPOCH = time.time() # (s)
+
+# Init log file
+LOG_FOLDER      = '/home/pi/Documents/logs/powmngm_logs/'#"/var/www/owncloud/data/raspi/files/logs/usb_share/" #HOME_FOLDER+"/Documents/logs/usb_share/"
+
+now = datetime.datetime.now()
+timenow = str(now)
+timenow = timenow.replace(' ', 'h')
+timenow = timenow.replace(':', '_')
+outfilename = LOG_FOLDER+timenow+'_powmngm.txt'
 
 SLEEP_TIME_SECS = 30 # (s) measure the battery status every X seconds
 if DEBUG:
@@ -42,7 +52,7 @@ inaBATT.configure(voltage_range = inaBATT.RANGE_16V)#,
                   
 # Init out file
 fout = open(outfilename,'a')
-fout.write('usb_V;batt_V;batt_Vperc;batt_Amp;batt_Pow\n')
+fout.write('t_s;usb_V;batt_V;batt_Vperc;batt_Amp;batt_Pow\n')
 fout.close()
     
 # NOTES:
@@ -56,7 +66,6 @@ fout.close()
 #   (3.7*0.4545)/1.5625e-05 + (2^18/2) = 237632 counts
 # * Generalizing the above formula: ADCcounts = Vbatt*VoltageDivider/ADCgain + ADCoffset
 #   Which inverted give us: Vbatt = (ADCcounts - ADCoffset)*ADCgain/VoltageDivider
-
 
 def readV_mcp3421(bus, addr_mcp3421, config_byte, DEBUG=False):
     # ADC specific data, depend on hardware config
@@ -125,9 +134,10 @@ while True:
     # detect if battery is low
     battery_is_low  = batt_Vperc < MIN_CHARGE_PERC_THRESHOLD
 
+    t_now_s = time.time()-T_START_EPOCH
     # store the data
     fout = open(outfilename,'a')
-    fout.write('%f;%f;%f;%f;%f\n'%(usb_V, batt_V, batt_Vperc, batt_Amp, batt_Pow))
+    fout.write('%f;%f;%f;%f;%f;%f\n'%(t_now_s, usb_V, batt_V, batt_Vperc, batt_Amp, batt_Pow))
     fout.close()
     
     if battery_is_low and not usb_is_connected and not DEBUG:
