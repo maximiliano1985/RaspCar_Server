@@ -51,7 +51,7 @@ def process_log_file(f_log):
     global SEMAPHORE
     # if someone else is writing in the main log file, wait until the semaphore is released
     while SEMAPHORE == SEM_RED:
-        sleep(0.01)
+        sleep(0.1)
     if SEMAPHORE == SEM_GREEN:
         SEMAPHORE = SEM_RED
         log_line = f_log.stdout.readline()
@@ -65,9 +65,9 @@ init_log_file()
 
 
 try:
-    print("##### LOG MANAGER #####")
+    print("##### LOG MANAGER INIT #####")
     time.sleep(10)
-    
+    print("##### LOG MANAGER STARTED #####")
     # get the newest file
     newestfile_usb = max(glob.iglob(LOG_FOLDER_USBSHARE+'2*.log'), key=os.path.getctime)
     newestfile_obd = max(glob.iglob(LOG_FOLDER_OBDLOG+'2*.log'), key=os.path.getctime)
@@ -86,6 +86,7 @@ try:
     p_obd.register(f_obd.stdout)
     
     while True:
+        sleep(0.1)
         if p_usb.poll(1):
             process_log_file(f_usb)
         if p_obd.poll(1):
