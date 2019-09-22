@@ -1,5 +1,5 @@
 import serial
-import time.time
+import time
 
 def read_serial(ser):
     gps_word = ''
@@ -19,9 +19,10 @@ ser = serial.Serial(
     #timeout=1)
 
 START_TIME_S = time.time()
-for i in range(10):        
+t = 0
+while t < 3:        
     line = ser.readline()
     t = time.time()-START_TIME_S
-    print(t, line)
+    print(round(t, 3), line)
 
 
