@@ -17,7 +17,7 @@ class gpsRecorder(object):
        
        #self.header = "time_gps;status_gps;latitude_gps;NS_indic_gps;longitude_gps;EW_indic_gps;speed_gps;course_gps;utc_gps;mode_gps;"
        
-       self.ser = serial.Serial(
+       self.serialConnection = serial.Serial(
            port=port,
            baudrate = baudrate)#,
            #parity=serial.PARITY_NONE,
@@ -26,7 +26,7 @@ class gpsRecorder(object):
            #timeout=1)
     
     def read_once(self):
-        line = ser.readline()
+        line = self.serialConnection.readline()
         # $GPRMC,hhmmss.sss,A,dddmm.mmmm,a,dddmm.mmmm,a,x.x,x.x,ddmmyy,,,a*hh<CR><LF>
         #   time: in hhmmss.sss
         #   status: V = Navigation receiver warning, A = Data Valid
