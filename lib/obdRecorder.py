@@ -74,7 +74,7 @@ class obdRecorder(object):
             for cmd in CMDS:
                 self.header += self.file_logger_data.log_sep + cmd.name
             
-            self.file_logger_data.write_msg_to_logData(header, printTime = False)
+            self.file_logger_data.write_data_to_log(header, printTime = False)
         else:
             self.header = "Time_s"
             for cmd in CMDS:
@@ -169,7 +169,7 @@ class obdRecorder(object):
                 if verbose:
                     print(logged_values)
                 if self.log_to_file:
-                    self.file_logger_data.write_msg_to_logData(logged_values)
+                    self.file_logger_data.write_data_to_log(logged_values)
 
                 nDatalines += 1
                 if (nDatalines % 1000) == 0 and self.log_to_file:
