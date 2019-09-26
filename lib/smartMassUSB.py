@@ -29,7 +29,9 @@ class smartMassUSB(object):
         os.system(self.CMD_MOUNT)
         
         self.observer = Observer(verbose)
-        
+        if self.verbose:
+            print("Started mass storage observer")
+            
     def close():
         self.file_logger.close()
         
@@ -115,5 +117,5 @@ if __name__ == '__main__':
         log_token       = "[U]")
         
     usb = smartMassUSB( file_logger = flog, verbose = True )
-    usb.run
+    usb.run()
     
