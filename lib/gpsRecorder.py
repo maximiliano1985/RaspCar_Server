@@ -65,7 +65,7 @@ class gpsRecorder(object):
                 print(out_ary)
         else:
             if self.debug:
-                print("Skipping line since partial message was received:"+str(len(tokens))+"of 13")
+                print("Reading again the serial, since partial message was received:"+str(len(tokens))+"of 13")
             out_ary = self.read_once()
         return out_ary
             
