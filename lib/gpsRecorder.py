@@ -46,20 +46,26 @@ class gpsRecorder(object):
         if self.debug:
             print(line)
         
-        tokens      = line.split(',')
-        time        = tokens[1]
-        status      = tokens[2]
-        latitude    = tokens[3]
-        NS_indic    = tokens[4]
-        longitude   = tokens[5]
-        EW_indic    = tokens[6]
-        speed       = tokens[7]
-        course      = tokens[8]
-        utc         = tokens[9]
-        
-        out_ary = [time, status, latitude, NS_indic, longitude, EW_indic, speed, course, utc]
-        if self.debug:
-            print(out_ary)
+        out_ary = [0,0,0,0,0,0,0,0,0]
+        if len(line):
+            tokens      = line.split(',')
+            time        = tokens[1]
+            status      = tokens[2]
+            latitude    = tokens[3]
+            NS_indic    = tokens[4]
+            longitude   = tokens[5]
+            EW_indic    = tokens[6]
+            speed       = tokens[7]
+            course      = tokens[8]
+            utc         = tokens[9]
+            
+            out_ary = [time, status, latitude, NS_indic, longitude, EW_indic, speed, course, utc]
+            
+            if self.debug:
+                print(out_ary)
+        else:
+            if self.debug:
+                print("Partial message received, skipping line")
         return out_ary
             
     def read(self):
