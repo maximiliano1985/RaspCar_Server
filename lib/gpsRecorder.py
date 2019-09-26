@@ -10,7 +10,7 @@ def keyboardInterruptHandler(signal, frame):
 
 signal.signal(signal.SIGINT, keyboardInterruptHandler)
 
-class gpsRecorder(Object):
+class gpsRecorder(object):
     
     def __init__(self, port='/dev/ttyS0', baudrate = 19200, debug = False):
        self.debug = debug
