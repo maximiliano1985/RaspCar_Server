@@ -206,12 +206,9 @@ if __name__ == '__main__':
                 reconnect_delay_sec     = 10,
                 reconnect_max_trials    = 20,
                 file_logger_status      = flogStatus,
-                file_logger_data        = flogData)
-    
-    rec.obdRecorder(port     = '/dev/rfcomm0',
-                reconnect_delay_sec     = 10,
-                reconnect_max_trials    = 20,
+                file_logger_data        = flogData,
                 log_to_file             = False)
+    
     rec.read( sampling_time_s = 0.1, verbose = False, timeout_stoplog = 60*5)
     
     rec.close()
