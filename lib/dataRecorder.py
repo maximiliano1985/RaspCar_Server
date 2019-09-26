@@ -40,6 +40,8 @@ class dataRecorder(object):
         nDatalines      = 0
         engine_rpm      = 0
         log_sep         = self.file_logger_data.log_sep
+        
+        logged_gps_old = ['0','0','0','0','0','0','0','0','0']
         while True:    
             ts_thread = Thread( target=time.sleep(sampling_time_s) )
             ts_thread.start()
@@ -51,9 +53,15 @@ class dataRecorder(object):
                 
                 # log the gps
                 logged_gps_ary = self.gps.read_once()
+                # manage gps data in case of error
+                if logged_gps_ary[1] == 'E':
+                    logged_gps_ary = logged_gps_old
+                else:
+                    logged_gps_old = logged_gps_ary
+                    
                 logged_gps_values = ""
-                for data in logged_gps_ary:
-                    logged_gps_values += log_sep + str(data)
+                for datastr in logged_gps_ary:
+                    logged_gps_values += log_sep + datastr
                 logged_all_data = logged_obd_values + logged_gps_values
                 
                 if verbose:

@@ -46,10 +46,9 @@ class gpsRecorder(object):
         if self.debug:
             print(line)
         
-        out_ary = [0,0,0,0,0,0,0,0,0]
+        out_ary = ['0','E','0','0','0','0','0','0','0']
         tokens      = line.split(',')
-        if len(tokens) == 13:
-            tokens      = line.split(',')
+        if len(tokens) == 13:            
             time        = tokens[1]
             status      = tokens[2]
             latitude    = tokens[3]
@@ -71,7 +70,7 @@ class gpsRecorder(object):
             
     def read(self):
         while True:        
-            self.read_once()
+            out_ary = self.read_once()
 
 if __name__ == '__main__':
     
