@@ -47,7 +47,8 @@ class gpsRecorder(object):
             print(line)
         
         out_ary = [0,0,0,0,0,0,0,0,0]
-        if len(line) == 75:
+        tokens      = line.split(',')
+        if len(tokens) == 13:
             tokens      = line.split(',')
             time        = tokens[1]
             status      = tokens[2]
@@ -65,7 +66,7 @@ class gpsRecorder(object):
                 print(out_ary)
         else:
             if self.debug:
-                print("Partial message received, skipping line")
+                print("Skipping line since partial message was received:"+str(len(tokens))+"of 13")
         return out_ary
             
     def read(self):
