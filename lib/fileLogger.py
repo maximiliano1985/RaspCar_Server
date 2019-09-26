@@ -3,8 +3,6 @@ import datetime
 import time
 
 class fileLogger(Object):
-    def __init__(self):
-    
     def __init__(self, log_folder, log_filetoken, log_sep, log_token):
         self.log_folder     = log_folder
         self.log_sep        = log_sep
