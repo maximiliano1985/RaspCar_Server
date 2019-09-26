@@ -1,8 +1,8 @@
 #!/usr/bin/python3
-import obd
 import time
 import signal
-import sys
+import serial
+
 
 def keyboardInterruptHandler(signal, frame):
     print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
