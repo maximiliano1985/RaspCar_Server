@@ -124,4 +124,4 @@ if __name__ == '__main__':
         file_logger_status  = flogStatus,
         file_logger_data    = flogData
     )
-    res.run(0.1, verbose= True, timeout_stoplog = 60*5)
+    rec.run(0.1, verbose= True, timeout_stoplog = 60*5)
