@@ -82,7 +82,7 @@ class powerManagement(object):
         # from https://raspi.tv/2017/how-much-power-does-pi-zero-w-use
         # we know that pizero at 5.2V (usb) consumes at max 300 mA (with margin), hence 1.6 W.
         # It means that at 3.7 V (battery) and 1.6 W, it absorbes 0.43 A > 0.5 A (with margin) 
-        self.ina219 = ina219(shunt_ohms  = 0.1,
+        self.ina219 = INA219(shunt_ohms  = 0.1,
                          #max_expected_amps = 2, 
                          address           = 0x40)
         self.ina219.configure(voltage_range = self.ina219.RANGE_16V)#,
@@ -187,4 +187,4 @@ if __name__ == '__main__':
         batt_low_V          = 3.5,
         batt_high_V         = 4 )
         
-    usb.run
+    usb.run()
