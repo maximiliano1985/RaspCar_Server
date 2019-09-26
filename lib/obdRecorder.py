@@ -80,7 +80,7 @@ class obdRecorder(object):
             for cmd in CMDS:
                 self.header += ";" + cmd.name
     
-    def OBDconnect(self):
+    def connect(self):
         #OBDconnection = obd.OBD(port)
         self.OBDconnection = obd.Async(self.port)#, delay_CMDS=0.05)
         if self.log_to_file:
@@ -105,7 +105,7 @@ class obdRecorder(object):
 
             self.file_logger_status.write_msg_to_log("Exit")
         
-    def OBDreconnect(self):
+    def reconnect(self):
         self.n_reconnect_trials = 0
     
         while not self.OBDconnection.is_connected():
