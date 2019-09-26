@@ -144,7 +144,7 @@ class powerManagement(object):
     
     
     
-    def __read_ina219(ina, DEBUG=False):        
+    def __read_ina219(self):        
         # read sensor
         #ina.wake()
         v = self.ina219.voltage()
