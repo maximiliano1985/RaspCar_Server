@@ -75,7 +75,7 @@ class obdRecorder(object):
                 self.header += self.file_logger_data.log_sep + cmd.name
             
             self.file_logger_data.write_msg_to_logData(header, printTime = False)
-         else
+         else:
             self.header = "Time_s"
             for cmd in CMDS:
                 self.header += ";" + cmd.name
