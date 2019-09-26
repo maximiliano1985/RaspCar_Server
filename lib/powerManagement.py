@@ -48,7 +48,7 @@ class powerManagement(object):
             # detect if the usb has been disconnected
             usb_is_connected = usb_V > 0.1
             
-            res = __read_ina219()
+            res = self.__read_ina219()
             batt_V     = res[0] # Volts
             batt_Vperc = res[1] # %
             batt_Amp   = res[2] # Ampere
