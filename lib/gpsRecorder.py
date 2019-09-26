@@ -15,7 +15,7 @@ class gpsRecorder(object):
     def __init__(self, port='/dev/ttyS0', baudrate = 19200, debug = False):
        self.debug = debug
        
-       #self.header = "time_gps;status_gps;latitude_gps;NS_indic_gps;longitude_gps;EW_indic_gps;speed_gps;course_gps;utc_gps;mode_gps;"
+       self.header = "time_gps;status_gps;latitude_gps;NS_indic_gps;longitude_gps;EW_indic_gps;speed_gps;course_gps;utc_gps;mode_gps;"
        
        self.serialConnection = serial.Serial(
            port=port,
