@@ -124,7 +124,7 @@ class powerManagement(object):
         VoltageDivider = 100.0e3/(100e3+120e3+100e3)
         
         mcpdata = self.MCP3421_bus.read_i2c_block_data(
-            self.MCP3421_addr_mcp3421,
+            self.MCP3421_addrUSB_mcp3421,
             self.MCP3421_config_byte,
             4)
             
