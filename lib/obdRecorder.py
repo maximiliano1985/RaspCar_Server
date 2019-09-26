@@ -209,6 +209,6 @@ if __name__ == '__main__':
                 file_logger_data        = flogData,
                 log_to_file             = False)
     
-    rec.read( sampling_time_s = 0.1, verbose = False, timeout_stoplog = 60*5)
+    rec.read( sampling_time_s = 0.1, verbose = False)
     
     rec.close()
