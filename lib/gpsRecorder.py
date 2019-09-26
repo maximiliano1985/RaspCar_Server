@@ -37,7 +37,7 @@ class gpsRecorder(object):
         #   speed: Speed over ground in knots
         #   course: Course over ground in degrees
         #   utc: UTC date of position fix, ddmmyy format
-        #   mode: Mode indicator N = Data not valid,
+        #   mode (not used): Mode indicator N = Data not valid,
         #                        A = Autonomous mode,
         #                        D = Differential mode,
         #                        E = Estimated (dead reckoning) mode,
@@ -45,7 +45,22 @@ class gpsRecorder(object):
         #                        S = Simulator mode
         if self.debug:
             print(line)
-        #return [time, status, latitude, NS_indic, longitude, EW_indic, speed, course, utc, mode]
+        
+        tokens      = line.split(',')
+        time        = tokens[1]
+        status      = tokens[2]
+        latitude    = tokens[3]
+        NS_indic    = tokens[4]
+        longitude   = tokens[5]
+        EW_indic    = tokens[6]
+        speed       = tokens[7]
+        course      = tokens[8]
+        utc         = tokens[9]
+        
+        out_ary = [time, status, latitude, NS_indic, longitude, EW_indic, speed, course, utc]
+        if self.debug:
+            print(out_ary)
+        return out_ary
             
     def read(self):
         while True:        
