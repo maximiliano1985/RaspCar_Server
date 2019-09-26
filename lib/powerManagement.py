@@ -134,13 +134,12 @@ class powerManagement(object):
         if mcpdata[0] & 0x80:            # if the data was negative 
             conversionresults -= 0x20000     #     subtract off the sign extension bit
         
-        USB_chrg_V = (conversionresults - ADCoffset)*ADCgain/VoltageDivider
+        usb_V = (conversionresults - ADCoffset)*ADCgain/VoltageDivider
         
         if self.debug:
-            print('<mcp> conversion res. %f\tconfig-byte %s\tUSB_chrg_V %f' %
-                (conversionresults, hex(mcpdata[3]), USB_chrg_V) )
+            print('<mcp> USB_V %f' % (usb_V) )
                  
-        return USB_chrg_V
+        return usb_V
     
     
     
