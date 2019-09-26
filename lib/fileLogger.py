@@ -2,7 +2,7 @@
 import datetime
 import time
 
-class fileLogger(Object):
+class fileLogger(object):
     def __init__(self, log_folder, log_filetoken, log_sep, log_token):
         self.log_folder     = log_folder
         self.log_sep        = log_sep
@@ -36,5 +36,5 @@ class fileLogger(Object):
         return timenow
         
         
-    def close(self)
+    def close(self):
         self.file.close()

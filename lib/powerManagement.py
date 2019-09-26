@@ -6,7 +6,7 @@ import time
 from ina219 import ina219
 from fileLogger import fileLogger
 
-class powerManagement(Object):
+class powerManagement(object):
     
     def __init__(self,
             file_logger_status  = fileLogger(),

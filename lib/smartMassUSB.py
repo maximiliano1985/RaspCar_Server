@@ -8,7 +8,7 @@ from watchdog.events import *
 
 from fileLogger import fileLogger
 
-class smartMassUSB(Object):
+class smartMassUSB(object):
     def __init__(self, watch_path = "/mnt/usb_share", file_logger = fileLogger(), verbose = False):
         self.file_logger    = file_logger
         self.file_logger.write_msg_to_log("Initializing")

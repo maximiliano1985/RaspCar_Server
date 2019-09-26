@@ -5,7 +5,7 @@ from fileLogger import fileLogger
 from gpsRecorder import gpsRecorder
 from obdRecorder import obdRecorder
 
-class dataRecorder(Object):
+class dataRecorder(object):
     def __init__(self,
             gps                 = gpsRecorder(),
             obd                 = obdRecorder(),

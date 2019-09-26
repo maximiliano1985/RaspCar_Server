@@ -51,7 +51,7 @@ CMDS = [
     #obd.commands.TIMING_ADVANCE,
 ]  
 
-class obdRecorder(Object):
+class obdRecorder(object):
     
     def __init__(self, port     = '/dev/rfcomm0',
                 reconnect_delay_sec     = 10,
