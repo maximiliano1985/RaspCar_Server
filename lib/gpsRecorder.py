@@ -47,7 +47,7 @@ class gpsRecorder(object):
             print(line)
         
         out_ary = [0,0,0,0,0,0,0,0,0]
-        if len(line):
+        if len(line) == 75:
             tokens      = line.split(',')
             time        = tokens[1]
             status      = tokens[2]
