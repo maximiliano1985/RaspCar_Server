@@ -208,7 +208,7 @@ if __name__ == '__main__':
                 file_logger_status      = flogStatus,
                 file_logger_data        = flogData,
                 log_to_file             = False)
-    
+    rec.connect()
     rec.read( sampling_time_s = 0.1, verbose = False)
     
     rec.close()
