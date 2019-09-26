@@ -27,6 +27,8 @@ echo "### Creating folder for logs (available only for pi user)"
 sudo mkdir /home/pi/Documents
 sudo mkdir /home/pi/Documents/logs
 sudo mkdir /home/pi/Documents/logs/usb_share
-sudo mkdir /home/pi/Documents/logs/obd_logs
-sudo mkdir /home/pi/Documents/logs/obddata_logs
+sudo mkdir /home/pi/Documents/logs/recorder_logs
+sudo mkdir /home/pi/Documents/logs/recorderdata_logs
+sudo mkdir /home/pi/Documents/logs/powmngm_logs
+
 sudo chmod -R 777 /home/pi/Documents

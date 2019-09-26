@@ -1,9 +1,9 @@
 [Unit]
-Description=USB Share Watchdog
+Description=Log management service
 
 [Service]
 Type=simple
-ExecStart=/usr/local/share/usb_share.py
+ExecStart=/usr/local/share/powerManagement.py
 Restart=always
 
 [Install]
