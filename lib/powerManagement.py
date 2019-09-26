@@ -60,11 +60,11 @@ class powerManagement(object):
             # store the data
             if self.debug:
                 log_sep = self.file_logger_data.log_sep
-                msg = time.time()+log_sep+
-                      str(usb_V)+log_sep+
-                      str(batt_V)+log_sep+
-                      str(batt_Vperc)+log_sep+
-                      str(batt_Amp)+log_sep+
+                msg = time.time()+log_sep+\
+                      str(usb_V)+log_sep+\
+                      str(batt_V)+log_sep+\
+                      str(batt_Vperc)+log_sep+\
+                      str(batt_Amp)+log_sep+\
                       str(batt_Pow)+log_sep
                 self.file_logger_data.write_msg_to_log(msg)
             

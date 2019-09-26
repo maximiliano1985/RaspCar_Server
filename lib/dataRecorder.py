@@ -19,12 +19,12 @@ class dataRecorder(object):
         self.file_logger_data   = file_logger_data
         self.file_logger_data.open_file()
         
-        obd.OBDconnect()
+        obd.connect()
         self.file_logger_status.write_msg_to_log("Connected OBD to port: "+self.obd.port)
         
         
         header = self.obd.header+self.gps.header
-        self.file_logger_data.write_msg_to_logData(header, printTime = False)
+        self.file_logger_data.write_data_to_log(header, printTime = False)
     
     def close(self):
         self.obd.close()
@@ -59,7 +59,7 @@ class dataRecorder(object):
                 if verbose:
                     print(logged_all_data)
                     
-                self.file_logger_data.write_msg_to_logData( logged_all_data )
+                self.file_logger_data.write_data_to_log( logged_all_data )
                 
             
                 nDatalines += 1
