@@ -177,7 +177,7 @@ if __name__ == '__main__':
         log_token       = "")
     
                     
-    usb = powerManagement(
+    batt = powerManagement(
         file_logger_status  = flogStatus,
         file_logger_data    = flogData,
         debug               = True,
@@ -187,4 +187,4 @@ if __name__ == '__main__':
         batt_low_V          = 3.5,
         batt_high_V         = 4 )
         
-    usb.run()
+    batt.run()
