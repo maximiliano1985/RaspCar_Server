@@ -3,7 +3,7 @@
 import smbus
 import os
 import time
-from ina219 import ina219
+from ina219 import INA219
 from fileLogger import fileLogger
 
 class powerManagement(object):

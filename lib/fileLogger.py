@@ -11,8 +11,9 @@ class fileLogger(object):
         self.log_filename = self.__get_time_token()+log_filetoken
     
     def write_msg_to_log(self, msg):
+        now = datetime.datetime.now()
+        hms = str(now.hour)+':'+str(now.minute)+':'+str(now.second)
         self.open_file()
-        
         full_msg = hms+self.log_sep+self.log_token+self.log_sep+msg+'\n'
         self.file.write(full_msg)
         
