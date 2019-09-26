@@ -45,7 +45,7 @@ class gpsRecorder(object):
         #                        S = Simulator mode
         if self.debug:
             print(line)
-        return [time, status, latitude, NS_indic, longitude, EW_indic, speed, course, utc, mode]
+        #return [time, status, latitude, NS_indic, longitude, EW_indic, speed, course, utc, mode]
             
     def read(self):
         while True:        
