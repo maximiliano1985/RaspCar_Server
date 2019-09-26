@@ -74,12 +74,12 @@ class smartMassUSB(object):
                             
                         evh.reset()
                             
-       except KeyboardInterrupt:
-           self.file_logger.write_msg_to_log("User interrupt of usb mass manager")
-           if self.verbose:
-               print("KeyboardInterrupt on usb mass storage manager")
-           self.observer.stop()
-           self.observer.join()        
+        except KeyboardInterrupt:
+            self.file_logger.write_msg_to_log("User interrupt of usb mass manager")
+            if self.verbose:
+                print("KeyboardInterrupt on usb mass storage manager")
+            self.observer.stop()
+            self.observer.join()        
 
 class DirtyHandler(FileSystemEventHandler):
     def __init__(self, verbose = False):
