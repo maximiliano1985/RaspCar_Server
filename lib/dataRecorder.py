@@ -63,7 +63,7 @@ class dataRecorder(object):
                 
             
                 nDatalines += 1
-                if (nDatalines % 1000) == 0 && self.log_to_file:
+                if (nDatalines % 1000) == 0 and self.log_to_file:
                     self.file_logger_status.write_msg_to_log("Logged "+str(nDatalines)+" lines")
                     nDatalines = 0
             else:
