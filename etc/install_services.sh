@@ -5,13 +5,13 @@ sudo cp ../lib/smartMassUSB.py      /usr/local/share
 sudo cp ../etc/smartMassUSB.service /etc/systemd/system
 
 echo "### Installation of service for automatic OBD management"
-sudo cp ../lib/dataRecorder.py 	   /usr/local/share
+sudo cp ../lib/dataRecorder.py 	  /usr/local/share
 sudo cp ../etc/dataRecorder.service /etc/systemd/system
 
-sudo cp ../lib/obdRecorder.py            /usr/local/share
-sudo cp ../lib/gpsRecorder.py            /usr/local/share
+sudo cp ../lib/obdRecorder.py     /usr/local/share
+sudo cp ../lib/gpsRecorder.py     /usr/local/share
 
-sudo cp obd_connect.py            /usr/local/share
+sudo cp ../lib/obd_connect.py     /usr/local/share
 sudo cp ../etc/obdconnect.service /etc/systemd/system
 
 echo "### Installation of service for log files management"

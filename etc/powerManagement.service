@@ -1,5 +1,5 @@
 [Unit]
-Description=Log management service
+Description=Power supply management service
 
 [Service]
 Type=simple

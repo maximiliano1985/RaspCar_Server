@@ -1,5 +1,5 @@
 [Unit]
-Description=OBD logger service
+Description=Data logger service
 
 [Service]
 Type=simple
