@@ -5,7 +5,7 @@ sudo cp ../lib/smartMassUSB.py      /usr/local/share
 sudo cp ../etc/smartmassusb.service /etc/systemd/system
 
 echo "### Installation of service for battery management"
-sudo cp ../lib/powermMnagement.py /usr/local/share
+sudo cp ../lib/powerManagement.py /usr/local/share
 sudo cp ../etc/powermanagement.service /etc/systemd/system
 
 echo "### Installation of service for automatic data recording"
@@ -27,7 +27,7 @@ sudo cp ../lib/gpsRecorder.py     /usr/local/share
 
 echo "### Enabling installed services"
 cd /usr/local/share/
-sudo chmod +x smartMassusb.py
+sudo chmod +x smartMassUSB.py
 sudo chmod +x powerManagement.py
 sudo chmod +x dataRecorder.py
 sudo chmod +x obd_connect.py
