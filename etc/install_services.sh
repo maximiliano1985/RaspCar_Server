@@ -12,9 +12,6 @@ echo "### Installation of service for automatic data recording"
 sudo cp ../lib/dataRecorder.py 	  /usr/local/share
 sudo cp ../etc/dataRecorder.service /etc/systemd/system
 
-sudo cp ../lib/obdRecorder.py     /usr/local/share
-sudo cp ../lib/gpsRecorder.py     /usr/local/share
-
 echo "### Installation of service for automatic obd connecting"
 sudo cp ../lib/obd_connect.py     /usr/local/share
 sudo cp ../etc/obdconnect.service /etc/systemd/system
@@ -24,7 +21,9 @@ sudo cp logManager.py      		  /usr/local/share
 sudo cp ../etc/logManager.service /etc/systemd/system
 
 echo "### Installation of libraries"
-sudo cp ../lib/fileLogger.py /usr/local/share
+sudo cp ../lib/fileLogger.py 	  /usr/local/share
+sudo cp ../lib/obdRecorder.py     /usr/local/share
+sudo cp ../lib/gpsRecorder.py     /usr/local/share
 
 echo "### Enabling installed services"
 cd /usr/local/share/
