@@ -94,11 +94,11 @@ if __name__ == '__main__':
     
     newestfile_usb = max(glob.iglob(log_folder+"usb_share/"+'2*.log'), key=os.path.getctime)
     newestfile_rec = max(glob.iglob(log_folder+"recorder_logs/" +'2*.log'), key=os.path.getctime)
-    newestfile_pow = max(glob.iglob(log_folder+"powmngm_logs/" +'2*.log'), key=os.path.getctime)
+    #newestfile_pow = max(glob.iglob(log_folder+"powmngm_logs/" +'2*.log'), key=os.path.getctime)
     
     mngr = logManager( file_logger_status = flogStatus )
     mngr.register_log_to_monitor( newestfile_usb )
     mngr.register_log_to_monitor( newestfile_rec )
-    mngr.register_log_to_monitor( newestfile_pow )
+    #mngr.register_log_to_monitor( newestfile_pow )
     
     mngr.run()
