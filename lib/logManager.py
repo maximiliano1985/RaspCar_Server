@@ -33,7 +33,7 @@ class logManager(object):
         self.monitored_file_procs = []
         self.monitored_file_pools = []
         
-        self.nax_num_monitored_files = 10
+        self.max_num_monitored_files = 10
 
 
     def process_log_file(self, f_proc):
@@ -51,7 +51,7 @@ class logManager(object):
     def register_log_to_monitor(self, log_name):
         num_monitored_files = len(self.monitored_file_procs)
         
-        if num_monitored_files > self.nax_num_monitored_files:
+        if num_monitored_files <= self.max_num_monitored_files:
             self.file_logger_status.write_msg_to_log("Added file to monitor: "+log_name)
             
             f_proc = subprocess.Popen(['tail','-F', log_name],\
@@ -92,11 +92,12 @@ if __name__ == '__main__':
         log_token       = "[L]")
     
     newestfile_usb = max(glob.iglob(log_folder+"usb_share/"+'2*.log'), key=os.path.getctime)
-    newestfile_obd = max(glob.iglob(log_folder+"recorder_logs/" +'2*.log'), key=os.path.getctime)
+    newestfile_rec = max(glob.iglob(log_folder+"recorder_logs/" +'2*.log'), key=os.path.getctime)
     newestfile_pow = max(glob.iglob(log_folder+"powmngm_logs/" +'2*.log'), key=os.path.getctime)
     
-    mngr = logManager( flogStatus )
+    mngr = logManager( file_logger_status = flogStatus )
     mngr.register_log_to_monitor( newestfile_usb )
-    mngr.register_log_to_monitor( newestfile_obd )
+    mngr.register_log_to_monitor( newestfile_rec )
+    mngr.register_log_to_monitor( newestfile_pow )
     
     mngr.run()
