@@ -64,14 +64,14 @@ class obdRecorder(object):
         self.n_reconnect_trials      = 1
         
         self.log_to_file = log_to_file
-        if self.log_to_file:
+        if self.log_to_file == True:
             self.file_logger_status = file_logger_status;
             self.file_logger_data   = file_logger_data;
             self.file_logger_data.open_file()
             
             self.header = "Time_s"
             for cmd in CMDS:
-                self.header += self.file_logger_data.log_sep + cmd.name
+                self.header += ';' + cmd.name
             
             self.file_logger_data.write_data_to_log(self.header, printTime = False)
         else:

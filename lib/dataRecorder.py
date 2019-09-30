@@ -111,14 +111,18 @@ class dataRecorder(object):
 if __name__ == '__main__':
     set_led(blue_on = True)
     
-    gpsRec = gpsRecorder(port='/dev/ttyS0', baudrate = 19200, debug = False)
+    gpsRec = gpsRecorder(
+                port     ='/dev/ttyS0',
+                baudrate = 19200,
+                debug    = False)
     
-    obdRec = obdRecorder(port     = '/dev/rfcomm0',
-                reconnect_delay_sec     = 10,
-                reconnect_max_trials    = 20,
-                file_logger_status      = None,
-                file_logger_data        = None,
-                log_to_file             = False)
+    obdRec = obdRecorder(
+                port                 = '/dev/rfcomm0',
+                reconnect_delay_sec  = 10,
+                reconnect_max_trials = 20,
+                file_logger_status   = None,
+                file_logger_data     = None,
+                log_to_file          = False)
     
     flogStatus = fileLogger(
         log_folder      = "/home/pi/Documents/logs/recorder_logs/",
@@ -127,7 +131,7 @@ if __name__ == '__main__':
         log_token       = "[R]")
     flogData = fileLogger(
         log_folder      = "/home/pi/Documents/logs/recorderdata_logs/",
-        log_filetoken   = "_obdData.log",
+        log_filetoken   = "_recData.log",
         log_sep         = ";",
         log_token       = "")
             
