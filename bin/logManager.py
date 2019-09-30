@@ -13,6 +13,8 @@ import select
 import getpass
 import signal
 
+from fileLogger import fileLogger
+
 SEM_RED   = False
 SEM_GREEN = True
 
