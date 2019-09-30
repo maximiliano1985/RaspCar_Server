@@ -71,7 +71,7 @@ class logManager(object):
     def run(self):
         time.sleep(10)
         num_files = len(self.monitored_file_procs)
-        print("##### LOG MANAGER STARTED FOR "+str(num_files)+"#####")
+        print("##### LOG MANAGER STARTED FOR "+str(num_files)+" FILES #####")
         # get the newest file
         
         while True:

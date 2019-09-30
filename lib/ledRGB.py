@@ -27,3 +27,6 @@ def set_led(red_on = False, blue_on = False, green_on = False):
         GPIO.output(LED_BLUE     , GPIO.HIGH)
     else:
         GPIO.output(LED_BLUE     , GPIO.LOW)
+
+def set_led_off():
+    set_led(red_on = False, blue_on = False, green_on = False)

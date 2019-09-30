@@ -1,8 +1,4 @@
 #!/usr/bin/python3
-
-from ledRGB import *
-set_led(red_on = True)
-
 import obd
 import time
 #import subprocess
@@ -62,8 +58,6 @@ class obdRecorder(object):
                 file_logger_status      = fileLogger(),
                 file_logger_data        = fileLogger(),
                 log_to_file             = True):
-        
-        set_led(blue_on = True)
         
         self.port                    = port
         self.reconnect_max_trials    = reconnect_max_trials
@@ -148,7 +142,6 @@ class obdRecorder(object):
     def read_once(self):
         if self.set_green_led_once == False:
             self.set_green_led_once = True
-            set_led(green_on = True)
             
             
         log_sep = ";"

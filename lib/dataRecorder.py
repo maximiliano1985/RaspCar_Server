@@ -1,3 +1,7 @@
+#!/usr/bin/python3
+from ledRGB import *
+set_led(red_on = True)
+
 import time
 from threading import Thread
 
@@ -27,7 +31,9 @@ class dataRecorder(object):
         self.file_logger_status.write_msg_to_log("Closed OBD connection") 
         
         self.file_logger_data.close()
-        self.file_logger_status.write_msg_to_log("Closed data log") 
+        self.file_logger_status.write_msg_to_log("Closed data log")
+        
+        set_led_off
         
         
     def run(self, sampling_time_s, verbose= False, timeout_stoplog = 60*5):
@@ -42,6 +48,7 @@ class dataRecorder(object):
         header = self.obd.header+self.gps.header
         self.file_logger_data.write_data_to_log(header, printTime = False)
         
+        set_led(green_on = True)
         while True:    
             ts_thread = Thread( target=time.sleep(sampling_time_s) )
             ts_thread.start()
@@ -99,6 +106,7 @@ class dataRecorder(object):
         
             
 if __name__ == '__main__':
+    set_led(blue_on = True)
     
     gpsRec = gpsRecorder(port='/dev/ttyS0', baudrate = 19200, debug = False)
     
