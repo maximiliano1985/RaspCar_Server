@@ -24,6 +24,7 @@ echo "### Installation of libraries"
 sudo cp ../lib/fileLogger.py 	  /usr/local/share
 sudo cp ../lib/obdRecorder.py     /usr/local/share
 sudo cp ../lib/gpsRecorder.py     /usr/local/share
+sudo cp ../lib/ledRGB.py     	  /usr/local/share
 
 echo "### Enabling installed services"
 cd /usr/local/share/

@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+
+from ledRGB import *
+set_led(red_on = True)
+
 import obd
 import time
 #import subprocess
@@ -6,7 +10,6 @@ import sys
 import signal
 from threading import Thread
 from fileLogger import fileLogger
-
 
 def keyboardInterruptHandler(signal, frame):
     print("KeyboardInterrupt (ID: {}) has been caught. Cleaning up...".format(signal))
@@ -59,7 +62,9 @@ class obdRecorder(object):
                 file_logger_status      = fileLogger(),
                 file_logger_data        = fileLogger(),
                 log_to_file             = True):
-       
+        
+        set_led(blue_on = True)
+        
         self.port                    = port
         self.reconnect_max_trials    = reconnect_max_trials
         self.n_reconnect_trials      = 1
@@ -79,6 +84,8 @@ class obdRecorder(object):
             self.header = "Time_s"
             for cmd in CMDS:
                 self.header += ";" + cmd.name
+        
+        self.set_green_led_once = False
     
     def connect(self):
         #OBDconnection = obd.OBD(port)
@@ -92,6 +99,7 @@ class obdRecorder(object):
         if self.log_to_file:
             self.file_logger_status.write_msg_to_log("Watching requested commands")
         
+        
         return self.OBDconnection.start()
           
     def close(self):
@@ -104,6 +112,10 @@ class obdRecorder(object):
             self.file_logger_data.close()    
 
             self.file_logger_status.write_msg_to_log("Exit")
+        
+        set_led(red_on = True)
+        self.set_green_led_once = False
+        
         
     def reconnect(self):
         self.n_reconnect_trials = 0
@@ -129,10 +141,16 @@ class obdRecorder(object):
                 if self.log_to_file:
                     self.file_logger_status.write_msg_to_log("Impossible to connect, quit application")
                 quit()
+                set_led(red_on = True)
                 return -1
     
     
     def read_once(self):
+        if self.set_green_led_once == False:
+            self.set_green_led_once = True
+            set_led(green_on = True)
+            
+            
         log_sep = ";"
         if self.log_to_file:
             log_sep         = self.file_logger_data.log_sep # get the separator to be used in the logger

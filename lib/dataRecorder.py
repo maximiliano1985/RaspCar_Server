@@ -19,12 +19,8 @@ class dataRecorder(object):
         self.file_logger_data   = file_logger_data
         self.file_logger_data.open_file()
         
-        obd.connect()
+        self.obd.connect()
         self.file_logger_status.write_msg_to_log("Connected OBD to port: "+self.obd.port)
-        
-        
-        header = self.obd.header+self.gps.header
-        self.file_logger_data.write_data_to_log(header, printTime = False)
     
     def close(self):
         self.obd.close()
@@ -42,6 +38,10 @@ class dataRecorder(object):
         log_sep         = self.file_logger_data.log_sep
         
         logged_gps_old = ['0','0','0','0','0','0','0','0','0']
+        
+        header = self.obd.header+self.gps.header
+        self.file_logger_data.write_data_to_log(header, printTime = False)
+        
         while True:    
             ts_thread = Thread( target=time.sleep(sampling_time_s) )
             ts_thread.start()
@@ -100,7 +100,7 @@ class dataRecorder(object):
             
 if __name__ == '__main__':
     
-    gpsRec = gpsRecorder(port='/dev/ttyS0', baudrate = 19200, debug = True)
+    gpsRec = gpsRecorder(port='/dev/ttyS0', baudrate = 19200, debug = False)
     
     obdRec = obdRecorder(port     = '/dev/rfcomm0',
                 reconnect_delay_sec     = 10,
