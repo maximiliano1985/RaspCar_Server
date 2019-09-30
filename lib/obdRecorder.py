@@ -113,7 +113,7 @@ class obdRecorder(object):
 
             self.file_logger_status.write_msg_to_log("Exit")
         
-        set_led(red_on = True)
+        set_led(red_on = False)
         self.set_green_led_once = False
         
         

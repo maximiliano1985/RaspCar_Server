@@ -98,30 +98,30 @@ class dataRecorder(object):
                 
         
             
-if __name__ == '__main__':
+#if __name__ == '__main__':
     
-    gpsRec = gpsRecorder(port='/dev/ttyS0', baudrate = 19200, debug = False)
-    
-    obdRec = obdRecorder(port     = '/dev/rfcomm0',
-                reconnect_delay_sec     = 10,
-                reconnect_max_trials    = 20,
-                log_to_file             = False)
-    
-    flogStatus = fileLogger(
-        log_folder      = "/home/pi/Documents/logs/recorder_logs/",
-        log_filetoken   = "_rec.log",
-        log_sep         = " ",
-        log_token       = "[R]")
-    flogData = fileLogger(
-        log_folder      = "/home/pi/Documents/logs/recorderdata_logs/",
-        log_filetoken   = "_obdData.log",
-        log_sep         = ";",
-        log_token       = "")
-            
-    rec = dataRecorder(
-        gps                 = gpsRec,
-        obd                 = obdRec,
-        file_logger_status  = flogStatus,
-        file_logger_data    = flogData
-    )
-    rec.run(0.1, verbose= True, timeout_stoplog = 60*5)
+gpsRec = gpsRecorder(port='/dev/ttyS0', baudrate = 19200, debug = False)
+
+obdRec = obdRecorder(port     = '/dev/rfcomm0',
+            reconnect_delay_sec     = 10,
+            reconnect_max_trials    = 20,
+            log_to_file             = False)
+
+flogStatus = fileLogger(
+    log_folder      = "/home/pi/Documents/logs/recorder_logs/",
+    log_filetoken   = "_rec.log",
+    log_sep         = " ",
+    log_token       = "[R]")
+flogData = fileLogger(
+    log_folder      = "/home/pi/Documents/logs/recorderdata_logs/",
+    log_filetoken   = "_obdData.log",
+    log_sep         = ";",
+    log_token       = "")
+        
+rec = dataRecorder(
+    gps                 = gpsRec,
+    obd                 = obdRec,
+    file_logger_status  = flogStatus,
+    file_logger_data    = flogData
+)
+rec.run(0.1, verbose= True, timeout_stoplog = 60*5)
