@@ -85,7 +85,7 @@ if __name__ == '__main__':
     log_folder = "/home/pi/Documents/logs/"
     flogStatus = fileLogger(
         log_folder      = log_folder,
-        log_filetoken   = "_obd.log",
+        log_filetoken   = ".log",
         log_sep         = " ",
         log_token       = "[L]")
     
