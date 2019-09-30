@@ -22,7 +22,7 @@ def keyboardInterruptHandler(signal, frame):
 
 signal.signal(signal.SIGINT, keyboardInterruptHandler)
 
-class logManager(Object):
+class logManager(object):
     def __init__(self, file_logger_status = fileLogger()):
         print("##### LOG MANAGER INIT #####")
         self.file_logger_status = file_logger_status
