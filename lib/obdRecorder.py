@@ -63,24 +63,25 @@ class obdRecorder(object):
         self.reconnect_max_trials    = reconnect_max_trials
         self.n_reconnect_trials      = 1
         
-        self.log_to_file = log_to_file
-        if self.log_to_file == True:
-            self.file_logger_status = file_logger_status;
-            self.file_logger_data   = file_logger_data;
-            self.file_logger_data.open_file()
-            
-            self.header = "Time_s"
-            for cmd in CMDS:
-                self.header += ';' + cmd.name
-            
-            self.file_logger_data.write_data_to_log(self.header, printTime = False)
-        else:
-            self.header = "Time_s"
-            for cmd in CMDS:
-                self.header += ";" + cmd.name
+        self.file_logger_status = file_logger_status;
+        self.file_logger_data   = file_logger_data;
+        self.log_to_file        = log_to_file
         
         self.set_green_led_once = False
-    
+        
+        self.log_sep = ';'
+        
+    def init_log_data_file(self):
+        
+        self.header = "Time_s"
+        for cmd in CMDS:
+            self.header += ';' + cmd.name
+            
+        if self.log_to_file == True:
+            self.file_logger_data.open_file()
+            self.file_logger_data.write_data_to_log(self.header, printTime = False)
+                
+                
     def connect(self):
         #OBDconnection = obd.OBD(port)
         self.OBDconnection = obd.Async(self.port)#, delay_CMDS=0.05)
@@ -94,6 +95,7 @@ class obdRecorder(object):
             self.file_logger_status.write_msg_to_log("Watching requested commands")
         
         
+        self.init_log_data_file()
         return self.OBDconnection.start()
           
     def close(self):
@@ -143,18 +145,13 @@ class obdRecorder(object):
         if self.set_green_led_once == False:
             self.set_green_led_once = True
             
-            
-        log_sep = ";"
-        if self.log_to_file:
-            log_sep         = self.file_logger_data.log_sep # get the separator to be used in the logger
-            
         logged_values   = "" # output string
         logged_all_data = True
         engine_rpm      = 0
         for cmd in CMDS:    
             try:
                 response = self.OBDconnection.query(cmd)
-                logged_values += log_sep + str(response.value.magnitude)
+                logged_values += self.log_sep + str(response.value.magnitude)
         
                 if cmd.name == 'RPM':
                     engine_rpm  = response.value.magnitude
