@@ -17,7 +17,7 @@ sudo cp ../lib/obd_connect.py     /usr/local/share
 sudo cp ../etc/obdconnect.service /etc/systemd/system
 
 echo "### Installation of service for log file monitoring"
-sudo cp logManager.py      		  /usr/local/share
+sudo cp ../lib/logManager.py      		  /usr/local/share
 sudo cp ../etc/logmanager.service /etc/systemd/system
 
 echo "### Installation of libraries"
