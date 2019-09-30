@@ -49,7 +49,7 @@ class logManager(Object):
     def register_log_to_monitor(self, log_name):
         num_monitored_files = len(self.monitored_file_procs)
         
-        if num_monitored_files > self.nax_num_monitored_files
+        if num_monitored_files > self.nax_num_monitored_files:
             self.file_logger_status("Added file to monitor: "+log_name)
             
             f_proc = subprocess.Popen(['tail','-F', log_name],\
