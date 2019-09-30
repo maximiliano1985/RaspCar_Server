@@ -52,7 +52,7 @@ class logManager(object):
         num_monitored_files = len(self.monitored_file_procs)
         
         if num_monitored_files > self.nax_num_monitored_files:
-            self.file_logger_status("Added file to monitor: "+log_name)
+            self.file_logger_status.write_msg_to_log("Added file to monitor: "+log_name)
             
             f_proc = subprocess.Popen(['tail','-F', log_name],\
                 stdout=subprocess.PIPE,stderr=subprocess.PIPE)
@@ -64,7 +64,7 @@ class logManager(object):
             
         else:
             print("##### [WARNING] MAX NUMBER OF MONITORED FILES REACHED: " + str(num_monitored_files) + " #####")
-            self.file_logger_status("Reached the max number of files to be monitor. Discarded: "+log_name)
+            self.file_logger_status.write_msg_to_log("Reached the max number of files to be monitor. Discarded: "+log_name)
         
         
     def run(self):
