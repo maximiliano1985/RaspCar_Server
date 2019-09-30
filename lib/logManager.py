@@ -44,7 +44,7 @@ class logManager(object):
         if self.semaphore == SEM_GREEN:
             self.semaphore = SEM_RED
             log_line = f_proc.stdout.readline()
-            self.file_logger_status.write_msg_to_log( log_line )
+            self.file_logger_status.write_msg_to_log( str(log_line) )
             self.semaphore = SEM_GREEN
             
             
@@ -52,6 +52,7 @@ class logManager(object):
         num_monitored_files = len(self.monitored_file_procs)
         
         if num_monitored_files <= self.max_num_monitored_files:
+            print("##### Added file to log: " + log_name)
             self.file_logger_status.write_msg_to_log("Added file to monitor: "+log_name)
             
             f_proc = subprocess.Popen(['tail','-F', log_name],\
