@@ -116,6 +116,8 @@ if __name__ == '__main__':
     obdRec = obdRecorder(port     = '/dev/rfcomm0',
                 reconnect_delay_sec     = 10,
                 reconnect_max_trials    = 20,
+                file_logger_status      = None,
+                file_logger_data        = None,
                 log_to_file             = False)
     
     flogStatus = fileLogger(
