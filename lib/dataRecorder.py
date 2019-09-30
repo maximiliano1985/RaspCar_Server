@@ -33,7 +33,7 @@ class dataRecorder(object):
         self.file_logger_data.close()
         self.file_logger_status.write_msg_to_log("Closed data log")
         
-        set_led_off
+        set_led_off()
         
         
     def run(self, sampling_time_s, verbose= False, timeout_stoplog = 60*5):
@@ -84,6 +84,7 @@ class dataRecorder(object):
             else:
                 if verbose:
                     print("Error in logging OBD data")
+                set_led(red_on = True)
                 break
         
             #time.sleep(0.01)
@@ -101,6 +102,8 @@ class dataRecorder(object):
             if t_since_stop > timeout_stoplog:
                 msg = "Engine RPM zero for "+str(timeout_stoplog)+" seconds, stop recorder"
                 self.file_logger_status.write_msg_to_log(msg)
+                
+                set_led(blue_on = True)
                 break
                 
         
