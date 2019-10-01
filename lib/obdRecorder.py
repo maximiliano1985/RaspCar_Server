@@ -158,7 +158,7 @@ class obdRecorder(object):
                     self.file_logger_status.write_msg_to_log("Error when logging "+cmd.name)
                 logged_all_data = False
                 engine_rpm      = 0
-                break 
+                #break 
                 
         return logged_all_data, logged_values, engine_rpm
                 
@@ -183,7 +183,7 @@ class obdRecorder(object):
                     nDatalines = 0
             else:
                 if verbose:
-                    print("Error in logging")
+                    print("Error in logging, ", logged_all_data)
                 break
         
             #time.sleep(0.01)
@@ -216,7 +216,7 @@ if __name__ == '__main__':
                 file_logger_data        = flogData,
                 log_to_file             = False)
     rec.connect()
-    rec.read( sampling_time_s = 0.1, verbose = False)
+    rec.read( sampling_time_s = 0.1, verbose = True)
     
     rec.close()
     
