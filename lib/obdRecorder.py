@@ -59,6 +59,7 @@ class obdRecorder(object):
                 file_logger_data        = fileLogger(),
                 log_to_file             = True):
         
+        obd.logger.setLevel(obd.logging.DEBUG)
         self.port                    = port
         self.reconnect_max_trials    = reconnect_max_trials
         self.n_reconnect_trials      = 1
@@ -205,6 +206,7 @@ if __name__ == '__main__':
         log_filetoken   = "_obdData.log",
         log_sep         = ";",
         log_token       = "")
+    
     
     rec = obdRecorder(port     = '/dev/rfcomm0',
                 reconnect_delay_sec     = 10,
