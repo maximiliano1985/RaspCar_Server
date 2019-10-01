@@ -26,7 +26,7 @@ class dataRecorder(object):
         is_connected = self.obd.connect()
         if is_connected:
             self.file_logger_status.write_msg_to_log("Connected OBD to port: "+self.obd.port)
-        else
+        else:
             self.file_logger_status.write_msg_to_log("ERROR IN CONNECTING OBD, reconnecting: "+self.obd.port+", trying "+str(self.n_reconnect_trials)+" times")
             
             is_connected = self.obd.reconnect()
