@@ -141,14 +141,18 @@ class obdRecorder(object):
                 return False
     
     
-    def read_once(self):
+    def read_once(self, verbose = False):
             
         logged_values   = "" # output string
         logged_all_data = True
         engine_rpm      = 0
         for cmd in CMDS:    
             try:
+                if verbose:
+                    print("Reading cmd: ", cmd)
                 response = self.OBDconnection.query(cmd)
+                if verbose:
+                    print("    read: ", str(response.value.magnitude)
                 logged_values += self.log_sep + str(response.value.magnitude)
         
                 if cmd.name == 'RPM':
@@ -169,7 +173,7 @@ class obdRecorder(object):
             ts_thread = Thread(target=time.sleep(sampling_time_s))
             ts_thread.start()
     
-            logged_all_data, logged_values, engine_rpm = self.read_once()
+            logged_all_data, logged_values, engine_rpm = self.read_once( verbose )
     
             if logged_all_data: # not error_while_logging:
                 if verbose:
@@ -184,7 +188,7 @@ class obdRecorder(object):
             else:
                 if verbose:
                     print("Error in logging, ", logged_all_data)
-                break
+                #break
         
             #time.sleep(0.01)
             ts_thread.join()
