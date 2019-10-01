@@ -195,27 +195,28 @@ if __name__ == '__main__':
     #self.file_logger_status.write_msg_to_log("Refresh OwnCloud index")
     #os.system("sudo -u www-data php  /var/www/owncloud/occ files:scan --all")
     
-## Logger management
-flogStatus = fileLogger(
-    log_folder      = "/home/pi/Documents/logs/obd_logs/",
-    log_filetoken   = "_obd.log",
-    log_sep         = " ",
-    log_token       = "[O]")
-
-flogData = fileLogger(
-    log_folder      = "/home/pi/Documents/logs/obddata_logs/",
-    log_filetoken   = "_obdData.log",
-    log_sep         = ";",
-    log_token       = "")
-
-
-rec = obdRecorder(port     = '/dev/rfcomm0',
-            reconnect_delay_sec     = 10,
-            reconnect_max_trials    = 20,
-            file_logger_status      = flogStatus,
-            file_logger_data        = flogData,
-            log_to_file             = False)
-rec.connect()
-rec.read( sampling_time_s = 0.1, verbose = False)
-
-rec.close()
+    ## Logger management
+    flogStatus = fileLogger(
+        log_folder      = "/home/pi/Documents/logs/obd_logs/",
+        log_filetoken   = "_obd.log",
+        log_sep         = " ",
+        log_token       = "[O]")
+    
+    flogData = fileLogger(
+        log_folder      = "/home/pi/Documents/logs/obddata_logs/",
+        log_filetoken   = "_obdData.log",
+        log_sep         = ";",
+        log_token       = "")
+    
+    
+    rec = obdRecorder(port     = '/dev/rfcomm0',
+                reconnect_delay_sec     = 10,
+                reconnect_max_trials    = 20,
+                file_logger_status      = flogStatus,
+                file_logger_data        = flogData,
+                log_to_file             = False)
+    rec.connect()
+    rec.read( sampling_time_s = 0.1, verbose = False)
+    
+    rec.close()
+    
