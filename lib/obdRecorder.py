@@ -114,7 +114,7 @@ class obdRecorder(object):
         
     def reconnect(self):
         self.n_reconnect_trials = 0
-    
+        obd.logger.setLevel(obd.logging.DEBUG)
         while not self.OBDconnection.is_connected():
             time.sleep(self.reconnect_max_trials)
             
