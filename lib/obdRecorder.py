@@ -66,9 +66,7 @@ class obdRecorder(object):
         self.file_logger_status = file_logger_status;
         self.file_logger_data   = file_logger_data;
         self.log_to_file        = log_to_file
-        
-        self.set_green_led_once = False
-        
+                
         self.log_sep = ';'
         
     def init_log_data_file(self):
@@ -107,11 +105,7 @@ class obdRecorder(object):
             self.file_logger_status.write_msg_to_log("Closing log data file") 
             self.file_logger_data.close()    
 
-            self.file_logger_status.write_msg_to_log("Exit")
-        
-        set_led(red_on = False)
-        self.set_green_led_once = False
-        
+            self.file_logger_status.write_msg_to_log("Exit")        
         
     def reconnect(self):
         self.n_reconnect_trials = 0
@@ -137,13 +131,10 @@ class obdRecorder(object):
                 if self.log_to_file:
                     self.file_logger_status.write_msg_to_log("Impossible to connect, quit application")
                 quit()
-                set_led(red_on = True)
                 return -1
     
     
     def read_once(self):
-        if self.set_green_led_once == False:
-            self.set_green_led_once = True
             
         logged_values   = "" # output string
         logged_all_data = True
