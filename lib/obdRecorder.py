@@ -59,7 +59,6 @@ class obdRecorder(object):
                 file_logger_data        = fileLogger(),
                 log_to_file             = True):
         
-        obd.logger.setLevel(obd.logging.DEBUG)
         self.port                    = port
         self.reconnect_max_trials    = reconnect_max_trials
         self.n_reconnect_trials      = 1
@@ -83,7 +82,9 @@ class obdRecorder(object):
                 
     def connect(self):
         #OBDconnection = cm
+        obd.logger.setLevel(obd.logging.DEBUG)
         self.OBDconnection = obd.Async(self.port)#, delay_CMDS=0.05)
+        obd.logger.removeHandler(obd.console_handler)
         
         if self.OBDconnection.is_connected():
             if self.log_to_file:
@@ -125,7 +126,7 @@ class obdRecorder(object):
                 self.file_logger_status.write_msg_to_log(msg)
     
             try:
-                return self.OBDconnect()
+                return self.connect()
             except:
                 self.OBDconnection.stop()
                 if self.log_to_file:
@@ -194,27 +195,27 @@ if __name__ == '__main__':
     #self.file_logger_status.write_msg_to_log("Refresh OwnCloud index")
     #os.system("sudo -u www-data php  /var/www/owncloud/occ files:scan --all")
     
-    ## Logger management
-    flogStatus = fileLogger(
-        log_folder      = "/home/pi/Documents/logs/obd_logs/",
-        log_filetoken   = "_obd.log",
-        log_sep         = " ",
-        log_token       = "[O]")
+## Logger management
+flogStatus = fileLogger(
+    log_folder      = "/home/pi/Documents/logs/obd_logs/",
+    log_filetoken   = "_obd.log",
+    log_sep         = " ",
+    log_token       = "[O]")
 
-    flogData = fileLogger(
-        log_folder      = "/home/pi/Documents/logs/obddata_logs/",
-        log_filetoken   = "_obdData.log",
-        log_sep         = ";",
-        log_token       = "")
-    
-    
-    rec = obdRecorder(port     = '/dev/rfcomm0',
-                reconnect_delay_sec     = 10,
-                reconnect_max_trials    = 20,
-                file_logger_status      = flogStatus,
-                file_logger_data        = flogData,
-                log_to_file             = False)
-    rec.connect()
-    rec.read( sampling_time_s = 0.1, verbose = False)
-    
-    rec.close()
+flogData = fileLogger(
+    log_folder      = "/home/pi/Documents/logs/obddata_logs/",
+    log_filetoken   = "_obdData.log",
+    log_sep         = ";",
+    log_token       = "")
+
+
+rec = obdRecorder(port     = '/dev/rfcomm0',
+            reconnect_delay_sec     = 10,
+            reconnect_max_trials    = 20,
+            file_logger_status      = flogStatus,
+            file_logger_data        = flogData,
+            log_to_file             = False)
+rec.connect()
+rec.read( sampling_time_s = 0.1, verbose = False)
+
+rec.close()

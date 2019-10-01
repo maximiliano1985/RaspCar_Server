@@ -94,7 +94,7 @@ class dataRecorder(object):
                 if verbose:
                     print("Error in logging OBD data")
                 set_led_off()
-                break
+                #break
         
             #time.sleep(0.01)
             ts_thread.join()
