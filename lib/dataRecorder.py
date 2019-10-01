@@ -67,6 +67,8 @@ class dataRecorder(object):
     
             if logged_all_data: # not error_while_logging:
                 
+                set_led(green_on = True)
+                
                 # log the gps
                 logged_gps_ary = self.gps.read_once()
                 # manage gps data in case of error
