@@ -81,20 +81,25 @@ class obdRecorder(object):
                 
                 
     def connect(self):
-        #OBDconnection = obd.OBD(port)
+        #OBDconnection = cm
         self.OBDconnection = obd.Async(self.port)#, delay_CMDS=0.05)
-        if self.log_to_file:
-            self.file_logger_status.write_msg_to_log("Connected to "+self.port)
         
-        for cmd in CMDS:
-            self.OBDconnection.watch(cmd) # keep track of the RPM
-        
-        if self.log_to_file:
-            self.file_logger_status.write_msg_to_log("Watching requested commands")
-        
-        
-        self.init_log_data_file()
-        return self.OBDconnection.start()
+        if self.OBDconnection.is_connected():
+            if self.log_to_file:
+                self.file_logger_status.write_msg_to_log("Connected to "+self.port)
+            
+            for cmd in CMDS:
+                self.OBDconnection.watch(cmd) # keep track of the RPM
+            
+            if self.log_to_file:
+                self.file_logger_status.write_msg_to_log("Watching requested commands")
+            
+            
+            self.init_log_data_file()
+            self.OBDconnection.start()
+            return True
+        else:
+            return False
           
     def close(self):
         if self.log_to_file:
@@ -124,14 +129,14 @@ class obdRecorder(object):
                 self.OBDconnection.stop()
                 if self.log_to_file:
                     self.file_logger_status.write_msg_to_log("Unexpected error: "+str(sys.exc_info()[0]) )
-                return -2
+                return False
                 
             if self.n_reconnect_trials > self.reconnect_max_trials:
                 self.OBDconnection.stop()
                 if self.log_to_file:
                     self.file_logger_status.write_msg_to_log("Impossible to connect, quit application")
                 quit()
-                return -1
+                return False
     
     
     def read_once(self):
