@@ -150,9 +150,12 @@ class obdRecorder(object):
             try:
                 if verbose:
                     print("Reading cmd: ", cmd)
+                
                 response = self.OBDconnection.query(cmd)
+                
                 if verbose:
                     print("    read: ", str(response.value.magnitude)
+                    
                 logged_values += self.log_sep + str(response.value.magnitude)
         
                 if cmd.name == 'RPM':
