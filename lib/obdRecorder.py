@@ -153,8 +153,8 @@ class obdRecorder(object):
                 
                 response = self.OBDconnection.query(cmd)
                 
-                if verbose:
-                    print("    read: ", str(response.value.magnitude)
+                if verbose :
+                    print("    read: ", str(response.value.magnitude))
                     
                 logged_values += self.log_sep + str(response.value.magnitude)
         
