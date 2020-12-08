@@ -1,0 +1,10 @@
+[Unit]
+Description=Power supply management service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/share/powerManagement.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

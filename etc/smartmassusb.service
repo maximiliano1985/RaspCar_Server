@@ -1,9 +1,9 @@
 [Unit]
-Description=Log management service
+Description=USB Share Watchdog
 
 [Service]
 Type=simple
-ExecStart=/usr/local/share/battery_manager.py
+ExecStart=/usr/local/share/smartMassUSB.py
 Restart=always
 
 [Install]

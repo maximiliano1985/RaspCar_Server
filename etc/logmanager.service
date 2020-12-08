@@ -1,9 +1,9 @@
 [Unit]
-Description=Log management service
+Description=Log files management service
 
 [Service]
 Type=simple
-ExecStart=/usr/local/share/log_manager.py
+ExecStart=/usr/local/share/logManager.py
 Restart=always
 
 [Install]

@@ -1,0 +1,9 @@
+[Unit]
+Description=Data logger service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/share/dataRecorder.py
+
+[Install]
+WantedBy=multi-user.target
